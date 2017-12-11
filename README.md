@@ -14,11 +14,12 @@ Or clone the repo:
      $ python setup.py install                                                                                                                                                                                      
 Usage
 ------------
+#### Reproduce Figure 2 from the paper.
 ```python
 from kneed import DataGenerator, KneeLocator
 
 DG = DataGenerator()
-x,y = DG.noisy_gaussian(N=1000)
+x,y = DG.figure2()
 
 print(x,y)
 (array([ 0.        ,  0.11111111,  0.22222222,  0.33333333,  0.44444444,
@@ -35,13 +36,13 @@ kneedle.plot_knee_normalized()
 ```
 ![](images/figure2.knee.png)
 
+#### Average Knee from 5000 NoisyGaussians when mu=50 and sigma=10
 ```python
-# Average Knee from 5000 NoisyGaussians
 import numpy as np
 
 knees = []
 for i in range(5000):
-    x,y = DG.noisy_gaussian(N=1000)
+    x,y = DG.noisy_gaussian(mu=50, sigma=10, N=1000)
     kneedle = KneeLocator(x,y)
     knees.append(kneedle.knee)
 
