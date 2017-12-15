@@ -1,5 +1,7 @@
 # kneed                                                                                                                                                                                                            
 ## Knee-point detection in Python
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/arvkevi/kneed/master) 
+
 This repository is an attempt to implement the kneedle algorithm, published [here](https://www1.icsi.berkeley.edu/~barath/papers/kneedle-simplex11.pdf). Given a set of `x` and `y` values, `kneed` will return the knee point of the function. The knee point is the point of maximum curvature.
 
 
