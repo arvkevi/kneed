@@ -1,8 +1,6 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
-import matplotlib
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 class KneeLocator(object):

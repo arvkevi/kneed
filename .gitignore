@@ -1,6 +1,6 @@
 *.py[cod]
 .ipynb_checkpoints
-
+*/.ipynb_checkpoints/*
 
 # C extensions
 *.so
@@ -22,6 +22,7 @@ develop-eggs
 .installed.cfg
 lib
 lib64
+dist/
 
 # Installer logs
 pip-log.txt
