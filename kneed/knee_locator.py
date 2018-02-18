@@ -3,14 +3,16 @@ from scipy import interpolate
 from scipy.signal import argrelextrema
 import matplotlib.pyplot as plt
 
+
 class KneeLocator(object):
 
-    def __init__(self, x, y, S=1.0, invert=False):
+    def __init__(self, x, y, S=1.0, invert=False, direction='increasing'):
         """
         x = x values
         y = y values
         S = Sensitivity parameter, original paper suggests default of 1.0
         invert = If True, algorithm will detect elbows instead of knees.
+        direction = {"increasing", "decreasing"}
         """
         # Step 0: Raw Input
         self.x = x
@@ -20,6 +22,7 @@ class KneeLocator(object):
             self.original_x = self.x, self.original_y = self.y
             self.x = [max(self.x) - x_ for x_ in self.x]
             self.y = [max(self.y) - y_ for y_ in self.y]
+        self.direction = direction
 
         if not np.array_equal(np.array(self.x), np.sort(self.x)):
             raise ValueError('x values must be sorted')
@@ -39,8 +42,12 @@ class KneeLocator(object):
 
         # Step 3: Calculate difference curve
         self.xd = self.xsn
-        self.yd = self.ysn - self.xsn
-
+        if self.direction == 'decreasing':
+            # print("finding a knee in a decreasing function")
+            self.yd = self.ysn + self.xsn
+            self.yd = 1 - self.yd
+        else:
+            self.yd = self.ysn - self.xsn
         # Step 4: Identify local maxima/minima
         # local maxima
         self.xmx_idx = argrelextrema(self.yd, np.greater)[0]
@@ -88,7 +95,7 @@ class KneeLocator(object):
                     # only need to check if j is a min
                     if self.yd[j + 1] > self.yd[j]:
                         self.Tmx[mxmx_i] = 0
-                        knee_x = None # reset x where yd crossed Tmx
+                        knee_x = None  # reset x where yd crossed Tmx
                     elif self.yd[j + 1] <= self.yd[j]:
                         unknown_condition = ("If this is a minima, "
                                              "how would you ever get here:")
