@@ -52,6 +52,17 @@ np.mean(knees)
 60.921051806064931
 ```
 
+Application
+-----------
+## Find the optimal number of clusters (k) to use in k-means clustering
+See the tutorial in the notebooks folder, this can be achieved with the `direction` keyword argument:
+```python
+KneeLocator(x, y, direction='decreasing')
+```
+
+![](images/knee.png)
+
+
 Contributing                                                                                                                                                                                                       
 ------------                                                         
 I welcome contibutions, if you have suggestions or would like to make improvements please submit an issue or pull request.                                                                                                                                                                                                                   
