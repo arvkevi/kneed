@@ -76,6 +76,12 @@ class KneeLocator(object):
         return ymx_i - (self.S * np.diff(self.xsn).mean())
 
     def find_knee(self, ):
+        if len(self.xmx_idx) == 0:
+            print("No local maxima found in the distance curve\n"
+                  "The line is probably not polynomial, try plotting\n"
+                  "the distance curve with plt.plot(knee.xd, knee.yd)")
+            return None, None, None
+
         mxmx_iter = np.arange(self.xmx_idx[0], len(self.xsn))
         xmx_idx_iter = np.append(self.xmx_idx, len(self.xsn))
 
