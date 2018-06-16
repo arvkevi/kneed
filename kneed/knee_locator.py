@@ -47,7 +47,7 @@ class KneeLocator(object):
             self.yd = self.ysn + self.xsn
             self.yd = 1 - self.yd
         else:
-            self.yd = self.ysn - self.xsn
+            self.yd = abs(self.ysn - self.xsn)
         # Step 4: Identify local maxima/minima
         # local maxima
         self.xmx_idx = argrelextrema(self.yd, np.greater)[0]
