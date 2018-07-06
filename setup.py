@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 here = path.abspath(path.dirname(__file__))
 
@@ -15,7 +15,8 @@ with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
     all_reqs = f.read().split('\n')
 
 install_requires = [x.strip() for x in all_reqs if 'git+' not in x]
-dependency_links = [x.strip().replace('git+', '') for x in all_reqs if x.startswith('git+')]
+dependency_links = [x.strip().replace('git+', '')
+                    for x in all_reqs if x.startswith('git+')]
 
 setup(
     name='kneed',
@@ -26,10 +27,10 @@ setup(
     download_url='https://github.com/arvkevi/kneed/tarball/' + __version__,
     license='BSD',
     classifiers=[
-      'Development Status :: 3 - Alpha',
-      'Intended Audience :: Science/Research',
-      'Topic :: Scientific/Engineering :: Information Analysis',
-      'Programming Language :: Python :: 3',
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Information Analysis',
+        'Programming Language :: Python :: 3',
     ],
     keywords='knee-detection system',
     packages=find_packages(exclude=['docs', 'tests*']),

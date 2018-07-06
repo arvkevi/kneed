@@ -19,7 +19,8 @@ class KneeLocator(object):
         self.y = y
         self.invert = invert
         if self.invert:
-            self.original_x = self.x; self.original_y = self.y
+            self.original_x = self.x
+            self.original_y = self.y
             self.x = [max(self.x) - x_ for x_ in self.x]
             self.y = [max(self.y) - y_ for y_ in self.y]
         self.direction = direction
