@@ -19,14 +19,18 @@ class KneeLocator(object):
         self.y = y
         self.invert = invert
         if self.invert:
-            self.original_x = self.x, self.original_y = self.y
+            self.original_x = self.x
+            self.original_y = self.y
             self.x = [max(self.x) - x_ for x_ in self.x]
             self.y = [max(self.y) - y_ for y_ in self.y]
         self.direction = direction
 
-        if not np.array_equal(np.array(self.x), np.sort(self.x)):
+        if (not np.array_equal(np.array(self.x), np.sort(self.x))
+                and not self.invert):
             raise ValueError('x values must be sorted')
-
+        if (not np.array_equal(np.array(self.x[::-1]), np.sort(self.x))
+                and self.invert):
+            raise ValueError('x values must be sorted')
         # parameters
         self.N = len(self.x)
         self.S = S
@@ -79,7 +83,8 @@ class KneeLocator(object):
         if len(self.xmx_idx) == 0:
             print("No local maxima found in the distance curve\n"
                   "The line is probably not polynomial, try plotting\n"
-                  "the distance curve with plt.plot(knee.xd, knee.yd)")
+                  "the distance curve with plt.plot(knee.xd, knee.yd)\n"
+                  "Also check that you aren't mistakenly setting the invert arguement")
             return None, None, None
 
         mxmx_iter = np.arange(self.xmx_idx[0], len(self.xsn))
