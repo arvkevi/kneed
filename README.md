@@ -8,8 +8,6 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 
 ## Installation
 
-* * *
-
 To install use pip:                                                                                                                                                                                                
 
      $ pip install kneed                                                                                                                                                                                            
@@ -20,7 +18,7 @@ Or clone the repo:
      $ python setup.py install                                                                                                                                                                                      
 
 ## Usage
-* * *
+
 #### Reproduce Figure 2 from the paper.
 
 ```python
@@ -61,7 +59,7 @@ np.mean(knees)
 ```
 
 ## Application
-* * *
+
 ## Find the optimal number of clusters (k) to use in k-means clustering
 
 See the tutorial in the notebooks folder, this can be achieved with the `direction` keyword argument:
