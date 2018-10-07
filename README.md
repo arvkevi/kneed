@@ -1,22 +1,26 @@
-# kneed                                                                                                                                                                                                            
+# kneed
+
 ## Knee-point detection in Python
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/arvkevi/kneed/master) 
+
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/arvkevi/kneed/master)  [![Build Status](https://travis-ci.com/arvkevi/kneed.svg?branch=master)](https://travis-ci.com/arvkevi/kneed) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0438592c8c0949fa902b2665a8b73ff1)](https://www.codacy.com/app/arvkevi/kneed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=arvkevi/kneed&amp;utm_campaign=Badge_Grade)
 
 This repository is an attempt to implement the kneedle algorithm, published [here](https://www1.icsi.berkeley.edu/~barath/papers/kneedle-simplex11.pdf). Given a set of `x` and `y` values, `kneed` will return the knee point of the function. The knee point is the point of maximum curvature.
 
+## Installation
 
-Installation                                                                                                                                                                                            
---------------------
 To install use pip:                                                                                                                                                                                                
 
      $ pip install kneed                                                                                                                                                                                            
+
 Or clone the repo:                                                                                                                                                                                                 
-                                                                                                                                                                                                                    
+
      $ git clone https://github.com/arvkevi/kneed.git                                                                                                                                                               
      $ python setup.py install                                                                                                                                                                                      
-Usage
-------------
+
+## Usage
+
 #### Reproduce Figure 2 from the paper.
+
 ```python
 from kneed import DataGenerator, KneeLocator
 
@@ -36,9 +40,11 @@ kneedle.knee
 
 kneedle.plot_knee_normalized()
 ```
+
 ![](images/figure2.knee.png)
 
 #### Average Knee from 5000 NoisyGaussians when mu=50 and sigma=10
+
 ```python
 import numpy as np
 
@@ -52,23 +58,26 @@ np.mean(knees)
 60.921051806064931
 ```
 
-Application
------------
+## Application
+
 ## Find the optimal number of clusters (k) to use in k-means clustering
+
 See the tutorial in the notebooks folder, this can be achieved with the `direction` keyword argument:
+
 ```python
 KneeLocator(x, y, direction='decreasing')
 ```
 
 ![](images/knee.png)
 
-
 Contributing                                                                                                                                                                                                       
-------------                                                         
+
+* * *
+
 I welcome contibutions, if you have suggestions or would like to make improvements please submit an issue or pull request.                                                                                                                                                                                                                   
-  
-Citation
-------
+
+## Citation
+
 Finding a “Kneedle” in a Haystack:
 Detecting Knee Points in System Behavior
 Ville Satopa
