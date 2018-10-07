@@ -1,7 +1,6 @@
 import math
 from kneed.data_generator import DataGenerator
 from kneed.knee_locator import KneeLocator
-import pytest
 
 
 def test_figure2():
