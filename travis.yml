@@ -11,4 +11,5 @@ script:
   - pytest
 branches:
   only:
+    - master
     - add_tests
