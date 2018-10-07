@@ -14,6 +14,6 @@ def test_figure2():
 def test_NoisyGaussian():
     """From the Kneedle manuscript"""
     DG = DataGenerator()
-    x, y = DG.noisy_gaussian(mu=50, sigma=10, N=1000)
+    x, y = DG.noisy_gaussian(mu=50, sigma=10, N=100000)
     kl = KneeLocator(x, y, S=1.0, invert=False)
-    assert math.isclose(kl.knee, 60.5, rel_tol=0.05)
+    assert math.isclose(kl.knee, 60.5, rel_tol=6.0)
