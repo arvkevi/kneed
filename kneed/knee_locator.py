@@ -18,19 +18,19 @@ class KneeLocator(object):
         self.x = x
         self.y = y
         self.curve = curve
-        if self.curve == 'concave':
-            self.original_x = self.x
-            self.original_y = self.y
-            self.x = [max(self.x) - x_ for x_ in self.x]
-            self.y = [max(self.y) - y_ for y_ in self.y]
+        #if (self.curve == 'concave' and direction == 'decreasing') or (self.curve == 'convex' and direction == 'increasing'):
+        #    self.original_x = self.x
+        #    self.original_y = self.y
+        #    self.x = [max(self.x) - x_ for x_ in self.x]
+        #    self.y = [max(self.y) - y_ for y_ in self.y]
         self.direction = direction
 
-        if (not np.array_equal(np.array(self.x), np.sort(self.x))
-                and self.curve == 'convex'):
-            raise ValueError('x values must be sorted')
-        if (not np.array_equal(np.array(self.x[::-1]), np.sort(self.x))
-                and self.curve == 'concave'):
-            raise ValueError('x values must be sorted')
+        #if (not np.array_equal(np.array(self.x), np.sort(self.x))
+    #            and self.curve == 'convex'):
+    #        raise ValueError('x values must be sorted')
+    #    if (not np.array_equal(np.array(self.x[::-1]), np.sort(self.x))
+#                and self.curve == 'concave'):
+            #raise ValueError('x values must be sorted')
         # parameters
         self.N = len(self.x)
         self.S = S
@@ -46,12 +46,16 @@ class KneeLocator(object):
 
         # Step 3: Calculate difference curve
         self.xd = self.xsn
-        if self.direction == 'decreasing':
-            # print("finding a knee in a decreasing function")
+        if self.curve == 'convex' and direction == 'decreasing':
             self.yd = self.ysn + self.xsn
             self.yd = 1 - self.yd
-        else:
+        elif self.curve == 'concave' and direction == 'decreasing':
+            self.yd = self.ysn + self.xsn
+        elif self.curve == 'concave' and direction == 'increasing':
+            self.yd = self.ysn - self.xsn
+        if self.curve == 'convex' and direction == 'increasing':
             self.yd = abs(self.ysn - self.xsn)
+
         # Step 4: Identify local maxima/minima
         # local maxima
         self.xmx_idx = argrelextrema(self.yd, np.greater)[0]
