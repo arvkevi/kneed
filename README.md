@@ -6,6 +6,9 @@
 
 This repository is an attempt to implement the kneedle algorithm, published [here](https://www1.icsi.berkeley.edu/~barath/papers/kneedle-simplex11.pdf). Given a set of `x` and `y` values, `kneed` will return the knee point of the function. The knee point is the point of maximum curvature.
 
+![](images/functions_args_summary.png)
+
+
 ## Installation
 
 To install use pip:                                                                                                                                                                                                
@@ -20,7 +23,7 @@ Or clone the repo:
 
 ## Usage
 
-#### Reproduce Figure 2 from the paper.
+### Reproduce Figure 2 from the paper.
 
 ```python
 from kneed import DataGenerator, KneeLocator
