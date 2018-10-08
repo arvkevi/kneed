@@ -6,31 +6,31 @@ import matplotlib.pyplot as plt
 
 class KneeLocator(object):
 
-    def __init__(self, x, y, S=1.0, invert=False, direction='increasing'):
+    def __init__(self, x, y, S=1.0, curve='concave', direction='increasing'):
         """
         x = x values
         y = y values
         S = Sensitivity parameter, original paper suggests default of 1.0
-        invert = If True, algorithm will detect elbows instead of knees.
+        curve = If True, algorithm will detect elbows instead of knees.
         direction = {"increasing", "decreasing"}
         """
         # Step 0: Raw Input
         self.x = x
         self.y = y
-        self.invert = invert
-        if self.invert:
-            self.original_x = self.x
-            self.original_y = self.y
-            self.x = [max(self.x) - x_ for x_ in self.x]
-            self.y = [max(self.y) - y_ for y_ in self.y]
+        self.curve = curve
+        #if (self.curve == 'concave' and direction == 'decreasing') or (self.curve == 'convex' and direction == 'increasing'):
+        #    self.original_x = self.x
+        #    self.original_y = self.y
+        #    self.x = [max(self.x) - x_ for x_ in self.x]
+        #    self.y = [max(self.y) - y_ for y_ in self.y]
         self.direction = direction
 
-        if (not np.array_equal(np.array(self.x), np.sort(self.x))
-                and not self.invert):
-            raise ValueError('x values must be sorted')
-        if (not np.array_equal(np.array(self.x[::-1]), np.sort(self.x))
-                and self.invert):
-            raise ValueError('x values must be sorted')
+        #if (not np.array_equal(np.array(self.x), np.sort(self.x))
+    #            and self.curve == 'convex'):
+    #        raise ValueError('x values must be sorted')
+    #    if (not np.array_equal(np.array(self.x[::-1]), np.sort(self.x))
+#                and self.curve == 'concave'):
+            #raise ValueError('x values must be sorted')
         # parameters
         self.N = len(self.x)
         self.S = S
@@ -46,12 +46,16 @@ class KneeLocator(object):
 
         # Step 3: Calculate difference curve
         self.xd = self.xsn
-        if self.direction == 'decreasing':
-            # print("finding a knee in a decreasing function")
+        if self.curve == 'convex' and direction == 'decreasing':
             self.yd = self.ysn + self.xsn
             self.yd = 1 - self.yd
-        else:
+        elif self.curve == 'concave' and direction == 'decreasing':
+            self.yd = self.ysn + self.xsn
+        elif self.curve == 'concave' and direction == 'increasing':
             self.yd = self.ysn - self.xsn
+        if self.curve == 'convex' and direction == 'increasing':
+            self.yd = abs(self.ysn - self.xsn)
+
         # Step 4: Identify local maxima/minima
         # local maxima
         self.xmx_idx = argrelextrema(self.yd, np.greater)[0]
@@ -84,7 +88,7 @@ class KneeLocator(object):
             print("No local maxima found in the distance curve\n"
                   "The line is probably not polynomial, try plotting\n"
                   "the distance curve with plt.plot(knee.xd, knee.yd)\n"
-                  "Also check that you aren't mistakenly setting the invert arguement")
+                  "Also check that you aren't mistakenly setting the curve argument")
             return None, None, None
 
         mxmx_iter = np.arange(self.xmx_idx[0], len(self.xsn))
