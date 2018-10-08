@@ -15,7 +15,8 @@ To install use pip:
 Or clone the repo:                                                                                                                                                                                                 
 
      $ git clone https://github.com/arvkevi/kneed.git                                                                                                                                                               
-     $ python setup.py install                                                                                                                                                                                      
+     $ python setup.py install                                                                                                                                
+**Tested with Python 3.5 and 3.6**
 
 ## Usage
 
