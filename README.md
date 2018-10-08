@@ -37,7 +37,7 @@ print(x,y)
  array([-5.        ,  0.26315789,  1.89655172,  2.69230769,  3.16326531,
          3.47457627,  3.69565217,  3.86075949,  3.98876404,  4.09090909]))
 
-kneedle = KneeLocator(x, y, S=1.0, invert=False)
+kneedle = KneeLocator(x, y, S=1.0, curve='concave', direction='increasing')
 
 kneedle.knee
 0.22222222222222221
@@ -55,7 +55,7 @@ import numpy as np
 knees = []
 for i in range(5000):
     x,y = DG.noisy_gaussian(mu=50, sigma=10, N=1000)
-    kneedle = KneeLocator(x,y)
+    kneedle = KneeLocator(x, y, curve='concave', direction='increasing')
     knees.append(kneedle.knee)
 
 np.mean(knees)
@@ -69,7 +69,7 @@ np.mean(knees)
 See the tutorial in the notebooks folder, this can be achieved with the `direction` keyword argument:
 
 ```python
-KneeLocator(x, y, direction='decreasing')
+KneeLocator(x, y, curve='convex', direction='decreasing')
 ```
 
 ![](images/knee.png)
