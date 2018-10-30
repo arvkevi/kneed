@@ -124,7 +124,7 @@ class KneeLocator(object):
 
     def plot_knee_normalized(self, ):
         import matplotlib.pyplot as plt
-        
+
         plt.figure(figsize=(8, 8))
         plt.plot(self.xsn, self.ysn)
         plt.plot(self.xd, self.yd, 'r')
