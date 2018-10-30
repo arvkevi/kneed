@@ -115,7 +115,7 @@ class KneeLocator(object):
                         unknown_condition = ("If this is a minima, "
                                              "how would you ever get here:")
                         print(unknown_condition)
-                if self.yd[j] < self.Tmx[mxmx_i]:
+                if self.yd[j] < self.Tmx[mxmx_i] or self.Tmx < 0:
                     # declare a knee
                     if not knee_x:
                         knee_x = j
