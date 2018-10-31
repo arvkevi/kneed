@@ -17,19 +17,8 @@ class KneeLocator(object):
         self.x = x
         self.y = y
         self.curve = curve
-        # if (self.curve == 'concave' and direction == 'decreasing') or (self.curve == 'convex' and direction == 'increasing'):
-        #    self.original_x = self.x
-        #    self.original_y = self.y
-        #    self.x = [max(self.x) - x_ for x_ in self.x]
-        #    self.y = [max(self.y) - y_ for y_ in self.y]
         self.direction = direction
 
-        # if (not np.array_equal(np.array(self.x), np.sort(self.x))
-    #            and self.curve == 'convex'):
-    #        raise ValueError('x values must be sorted')
-    #    if (not np.array_equal(np.array(self.x[::-1]), np.sort(self.x))
-#                and self.curve == 'concave'):
-        #raise ValueError('x values must be sorted')
         # parameters
         self.N = len(self.x)
         self.S = S
