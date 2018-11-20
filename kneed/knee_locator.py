@@ -1,7 +1,6 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
-import matplotlib.pyplot as plt
 
 
 class KneeLocator(object):
@@ -111,6 +110,8 @@ class KneeLocator(object):
         return knee_, norm_knee_, knee_x
 
     def plot_knee_normalized(self, ):
+        import matplotlib.pyplot as plt
+
         plt.figure(figsize=(8, 8))
         plt.plot(self.xsn, self.ysn)
         plt.plot(self.xd, self.yd, 'r')
@@ -120,6 +121,8 @@ class KneeLocator(object):
         plt.vlines(self.norm_knee, plt.ylim()[0], plt.ylim()[1])
 
     def plot_knee(self, ):
+        import matplotlib.pyplot as plt
+
         plt.figure(figsize=(8, 8))
         plt.plot(self.x, self.y)
         plt.vlines(self.knee, plt.ylim()[0], plt.ylim()[1])
