@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
+import warnings
 
 
 class KneeLocator(object):
@@ -71,10 +72,10 @@ class KneeLocator(object):
 
     def find_knee(self, ):
         if len(self.xmx_idx) == 0:
-            print("No local maxima found in the distance curve\n"
-                  "The line is probably not polynomial, try plotting\n"
-                  "the distance curve with plt.plot(knee.xd, knee.yd)\n"
-                  "Also check that you aren't mistakenly setting the curve argument")
+            warnings.warn("No local maxima found in the distance curve\n"
+                          "The line is probably not polynomial, try plotting\n"
+                          "the distance curve with plt.plot(knee.xd, knee.yd)\n"
+                          "Also check that you aren't mistakenly setting the curve argument", RuntimeWarning)
             return None, None, None
 
         mxmx_iter = np.arange(self.xmx_idx[0], len(self.xsn))
@@ -98,9 +99,8 @@ class KneeLocator(object):
                         self.Tmx[mxmx_i] = 0
                         knee_x = None  # reset x where yd crossed Tmx
                     elif self.yd[j + 1] <= self.yd[j]:
-                        unknown_condition = ("If this is a minima, "
-                                             "how would you ever get here:")
-                        print(unknown_condition)
+                        warnings.warn("If this is a minima, "
+                                      "how would you ever get here:", RuntimeWarning)
                 if self.yd[j] < self.Tmx[mxmx_i] or self.Tmx[mxmx_i] < 0:
                     # declare a knee
                     if not knee_x:
