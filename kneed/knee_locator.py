@@ -149,3 +149,17 @@ class KneeLocator(object):
         plt.figure(figsize=(8, 8))
         plt.plot(self.x, self.y)
         plt.vlines(self.knee, plt.ylim()[0], plt.ylim()[1])
+
+    # Niceties for users working with elbows rather than knees
+
+    @property
+    def elbow(self):
+        return self.knee
+
+    @property
+    def norm_elbow(self):
+        return self.norm_knee
+
+    @property
+    def elbow_x(self):
+        return self.knee_x
