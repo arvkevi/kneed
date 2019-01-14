@@ -23,6 +23,7 @@ setup(
     version=__version__,
     description='Knee-point detection in Python',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/arvkevi/kneed',
     download_url='https://github.com/arvkevi/kneed/tarball/' + __version__,
     license='BSD',
