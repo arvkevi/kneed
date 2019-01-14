@@ -44,6 +44,10 @@ kneedle = KneeLocator(x, y, S=1.0, curve='concave', direction='increasing')
 
 print(round(kneedle.knee, 3))
 0.222
+
+# .elbow can also be used to access point of maximum curvature
+print(round(kneedle.elbow, 3))
+0.222
 ```
 The `KneeLocator` class also has some plotting functions for quick visualization of the curve (blue), the distance curve (red) and the knee (dashed line, if present)
 ```Python
