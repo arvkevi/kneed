@@ -10,4 +10,3 @@ script:
 branches:
   only:
     - master
-    - add_tests
