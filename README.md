@@ -2,7 +2,7 @@
 
 ## Knee-point detection in Python
 
-[![Downloads](https://pepy.tech/badge/kneed)](https://pepy.tech/project/kneed) [![Downloads](https://pepy.tech/badge/kneed/week)](https://pepy.tech/project/kneed) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/arvkevi/kneed/master)  [![Build Status](https://travis-ci.com/arvkevi/kneed.svg?branch=master)](https://travis-ci.com/arvkevi/kneed) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0438592c8c0949fa902b2665a8b73ff1)](https://www.codacy.com/app/arvkevi/kneed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=arvkevi/kneed&amp;utm_campaign=Badge_Grade)
+[![Downloads](https://pepy.tech/badge/kneed)](https://pepy.tech/project/kneed) [![Downloads](https://pepy.tech/badge/kneed/week)](https://pepy.tech/project/kneed) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/arvkevi/kneed/master)  [![Build Status](https://travis-ci.com/arvkevi/kneed.svg?branch=master)](https://travis-ci.com/arvkevi/kneed) [![CodeFactor](https://www.codefactor.io/repository/github/arvkevi/kneed/badge)](https://www.codefactor.io/repository/github/arvkevi/kneed)
 
 This repository is an attempt to implement the kneedle algorithm, published [here](https://www1.icsi.berkeley.edu/~barath/papers/kneedle-simplex11.pdf). Given a set of `x` and `y` values, `kneed` will return the knee point of the function. The knee point is the point of maximum curvature.
 
