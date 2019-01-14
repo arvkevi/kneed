@@ -90,7 +90,7 @@ class KneeLocator(object):
         :rtype: (float, float, int)
         )
         """
-        if not self.xmx_idx:
+        if not self.xmx_idx.size:
             warnings.warn("No local maxima found in the distance curve\n"
                           "The line is probably not polynomial, try plotting\n"
                           "the distance curve with plt.plot(knee.xd, knee.yd)\n"
