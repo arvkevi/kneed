@@ -8,11 +8,19 @@ class KneeLocator(object):
 
     def __init__(self, x, y, S=1.0, curve='concave', direction='increasing'):
         """
-        x = x values
-        y = y values
-        S = Sensitivity parameter, original paper suggests default of 1.0
-        curve = If True, algorithm will detect elbows instead of knees.
-        direction = {"increasing", "decreasing"}
+        Once instantiated, this class attempts to find the point of maximum
+        curvature on a line. The knee is accessible via the `.knee` attribute.
+        :param x: x values.
+        :type x: list or array.
+        :param y: y values.
+        :type y: list or array.
+        :param S: Sensitivity, original paper suggests default of 1.0
+        :type S: float
+        :param curve: If 'concave', algorithm will detect knees. If 'convex', it
+            will detect elbows.
+        :type curve: string
+        :param direction: one of {"increasing", "decreasing"}
+        :type direction: string
         """
         # Step 0: Raw Input
         self.x = x
@@ -62,16 +70,26 @@ class KneeLocator(object):
 
     @staticmethod
     def __normalize(a):
+        """normalize an array
+        :param a: The array to normalize
+        :type a: array
+        """
         return (a - min(a)) / (max(a) - min(a))
 
     def __threshold(self, ymx_i):
-        """
-        calculates the difference threshold for a
+        """Calculates the difference threshold for a
         given difference local maximum
+        :param ymx_i: the normalized y value of a local maximum
         """
         return ymx_i - (self.S * np.diff(self.xsn).mean())
 
     def find_knee(self, ):
+        """This function finds and returns the knee value, the normalized knee
+        value, and the x value where the knee is located.
+        :returns: tuple(knee, norm_knee, knee_x)
+        :rtype: (float, float, int)
+        )
+        """
         if len(self.xmx_idx) == 0:
             warnings.warn("No local maxima found in the distance curve\n"
                           "The line is probably not polynomial, try plotting\n"
@@ -111,6 +129,9 @@ class KneeLocator(object):
         return knee_, norm_knee_, knee_x
 
     def plot_knee_normalized(self, ):
+        """Plot the normalized curve, the distance curve (xd, ysn) and the
+        knee, if it exists.
+        """
         import matplotlib.pyplot as plt
 
         plt.figure(figsize=(8, 8))
@@ -122,6 +143,7 @@ class KneeLocator(object):
         plt.vlines(self.norm_knee, plt.ylim()[0], plt.ylim()[1])
 
     def plot_knee(self, ):
+        """Plot the curve and the knee, if it exists"""
         import matplotlib.pyplot as plt
 
         plt.figure(figsize=(8, 8))
