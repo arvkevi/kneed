@@ -60,7 +60,8 @@ class KneeLocator(object):
         # Step 6: find knee
         self.knee, self.norm_knee, self.knee_x = self.find_knee()
 
-    def __normalize(self, a):
+    @staticmethod
+    def __normalize(a):
         return (a - min(a)) / (max(a) - min(a))
 
     def __threshold(self, ymx_i):
