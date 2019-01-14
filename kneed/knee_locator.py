@@ -90,7 +90,7 @@ class KneeLocator(object):
         :rtype: (float, float, int)
         )
         """
-        if len(self.xmx_idx) == 0:
+        if not self.xmx_idx.size:
             warnings.warn("No local maxima found in the distance curve\n"
                           "The line is probably not polynomial, try plotting\n"
                           "the distance curve with plt.plot(knee.xd, knee.yd)\n"
@@ -101,7 +101,7 @@ class KneeLocator(object):
         xmx_idx_iter = np.append(self.xmx_idx, len(self.xsn))
 
         knee_, norm_knee_, knee_x = 0.0, 0.0, None
-        for mxmx_i in range(len(xmx_idx_iter)):
+        for mxmx_i, mxmx in enumerate(xmx_idx_iter):
             # stopping criteria for exhasuting array
             if mxmx_i == len(xmx_idx_iter) - 1:
                 break
