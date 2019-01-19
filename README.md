@@ -10,14 +10,24 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 
 ## Installation
 
-To install use pip:                                                                                                                                                                                                
+To install use:
 
-     $ pip install kneed                                                                                                                                                                                            
+conda:
 
-Or clone the repo:                                                                                                                                                                                                 
+    $ conda install -c conda-forge kneed                                                         
 
-     $ git clone https://github.com/arvkevi/kneed.git                                                                                                                                                               
-     $ python setup.py install                                                                                                                                
+pip:                                                               
+
+```
+$ pip install kneed
+```
+
+Or clone the repo:
+```
+$ git clone https://github.com/arvkevi/kneed.git
+$ python setup.py install
+```
+
 **Tested with Python 3.5 and 3.6**
 
 ## Usage
@@ -35,7 +45,7 @@ print([round(i, 3) for i in y])
 
 [0.0, 0.111, 0.222, 0.333, 0.444, 0.556, 0.667, 0.778, 0.889, 1.0]
 [-5.0, 0.263, 1.897, 2.692, 3.163, 3.475, 3.696, 3.861, 3.989, 4.091]
-```
+
 Instantiating `KneeLocator` with `x`, `y` and the appropriate `curve` and `direction` will find the knee (or elbow) point.  
 Here, `kneedle.knee` stores the knee point of the curve.
 
@@ -49,7 +59,9 @@ print(round(kneedle.knee, 3))
 print(round(kneedle.elbow, 3))
 0.222
 ```
+
 The `KneeLocator` class also has some plotting functions for quick visualization of the curve (blue), the distance curve (red) and the knee (dashed line, if present)
+
 ```Python
 kneedle.plot_knee_normalized()
 ```
@@ -72,6 +84,7 @@ np.mean(knees)
 ```
 
 ## Application
+
 Find the optimal number of clusters (k) to use in k-means clustering.
 See the tutorial in the notebooks folder, this can be achieved with the `direction` keyword argument:
 
