@@ -45,6 +45,7 @@ print([round(i, 3) for i in y])
 
 [0.0, 0.111, 0.222, 0.333, 0.444, 0.556, 0.667, 0.778, 0.889, 1.0]
 [-5.0, 0.263, 1.897, 2.692, 3.163, 3.475, 3.696, 3.861, 3.989, 4.091]
+```
 
 Instantiating `KneeLocator` with `x`, `y` and the appropriate `curve` and `direction` will find the knee (or elbow) point.  
 Here, `kneedle.knee` stores the knee point of the curve.
