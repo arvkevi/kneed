@@ -3,7 +3,7 @@ from scipy import interpolate
 from scipy.signal import argrelextrema
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
-import warning
+import warnings
 
 
 class KneeLocator(object):
@@ -27,8 +27,8 @@ class KneeLocator(object):
         :type smooth: string
         """
         # Step 0: Raw Input
-        self.x = x
-        self.y = y
+        self.x = np.array(x)
+        self.y = np.array(y)
         self.curve = curve
         self.direction = direction
         self.N = len(self.x)
@@ -41,10 +41,10 @@ class KneeLocator(object):
             self.Ds_y = uspline(self.Ds_x)
         elif smooth == "polynomial":
             pn_model = PolynomialFeatures(7)
-            xpn = pn_model.fit_transform(self.x)
+            xpn = pn_model.fit_transform(self.x.reshape(-1, 1))
             regr_model = LinearRegression()
             regr_model.fit(xpn,self.y)
-            self.Ds_y = regr_model.predict(self.Ds_x)
+            self.Ds_y = regr_model.predict(pn_model.fit_transform(self.Ds_x.reshape(-1, 1)))
         else:
             warning.warning(f"{smooth} is invalid as a smoothing parameter")
             return
