@@ -1,12 +1,14 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
-import warnings
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+import warning
 
 
 class KneeLocator(object):
 
-    def __init__(self, x, y, S=1.0, curve='concave', direction='increasing'):
+    def __init__(self, x, y, S=1.0, curve='concave', direction='increasing',smooth='interp1d'):
         """
         Once instantiated, this class attempts to find the point of maximum
         curvature on a line. The knee is accessible via the `.knee` attribute.
@@ -21,6 +23,8 @@ class KneeLocator(object):
         :type curve: string
         :param direction: one of {"increasing", "decreasing"}
         :type direction: string
+        :param smooth: one of {"interp1d", "polynomial"}
+        :type smooth: string
         """
         # Step 0: Raw Input
         self.x = x
@@ -31,9 +35,19 @@ class KneeLocator(object):
         self.S = S
 
         # Step 1: fit a smooth line
-        uspline = interpolate.interp1d(self.x, self.y)
         self.Ds_x = np.linspace(np.min(self.x), np.max(self.x), self.N)
-        self.Ds_y = uspline(self.Ds_x)
+        if smooth == "interp1d":
+            uspline = interpolate.interp1d(self.x, self.y)
+            self.Ds_y = uspline(self.Ds_x)
+        elif smooth == "polynomial":
+            pn_model = PolynomialFeatures(7)
+            xpn = pn_model.fit_transform(self.x)
+            regr_model = LinearRegression()
+            regr_model.fit(xpn,self.y)
+            self.Ds_y = regr_model.predict(self.Ds_x)
+        else:
+            warning.warning(f"{smooth} is invalid as a smoothing parameter")
+            return
 
         # Step 2: normalize values
         self.xsn = self.__normalize(self.Ds_x)
