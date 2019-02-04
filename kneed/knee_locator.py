@@ -8,7 +8,7 @@ import warnings
 
 class KneeLocator(object):
 
-    def __init__(self, x, y, S=1.0, curve='concave', direction='increasing',smooth='interp1d'):
+    def __init__(self, x, y, S=1.0, curve='concave', direction='increasing', interp_method='interp1d'):
         """
         Once instantiated, this class attempts to find the point of maximum
         curvature on a line. The knee is accessible via the `.knee` attribute.
@@ -23,8 +23,8 @@ class KneeLocator(object):
         :type curve: string
         :param direction: one of {"increasing", "decreasing"}
         :type direction: string
-        :param smooth: one of {"interp1d", "polynomial"}
-        :type smooth: string
+        :param interp_method: one of {"interp1d", "polynomial"}
+        :type interp_method: string
         """
         # Step 0: Raw Input
         self.x = np.array(x)
@@ -36,17 +36,19 @@ class KneeLocator(object):
 
         # Step 1: fit a smooth line
         self.Ds_x = np.linspace(np.min(self.x), np.max(self.x), self.N)
-        if smooth == "interp1d":
+        if interp_method == "interp1d":
             uspline = interpolate.interp1d(self.x, self.y)
             self.Ds_y = uspline(self.Ds_x)
-        elif smooth == "polynomial":
+        elif interp_method == "polynomial":
             pn_model = PolynomialFeatures(7)
             xpn = pn_model.fit_transform(self.x.reshape(-1, 1))
             regr_model = LinearRegression()
-            regr_model.fit(xpn,self.y)
-            self.Ds_y = regr_model.predict(pn_model.fit_transform(self.Ds_x.reshape(-1, 1)))
+            regr_model.fit(xpn, self.y)
+            self.Ds_y = regr_model.predict(
+                pn_model.fit_transform(self.Ds_x.reshape(-1, 1)))
         else:
-            warning.warning(f"{smooth} is invalid as a smoothing parameter")
+            warnings.warn(f"{interp_method} is an invalid interp_method parameter, "
+                          "use either 'interp1d' or 'polynomial'")
             return
 
         # Step 2: normalize values
