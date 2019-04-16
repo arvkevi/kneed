@@ -84,6 +84,38 @@ np.mean(knees)
 60.921051806064931
 ```
 
+#### Polynomial Line Fit
+Here is an example of a "bumpy" line where the default `interp1d` spline fitting method does not provide the best estimate for the point of maximum curvature.
+This example demonstrates that setting the parameter `interp_method='polynomial'` will choose a more accurate point by smoothing the line.
+
+```python
+x = list(range(90))
+y = [
+    7304.99, 6978.98, 6666.61, 6463.20, 6326.53, 6048.79, 6032.79, 5762.01, 5742.77,
+    5398.22, 5256.84, 5226.98, 5001.72, 4941.98, 4854.24, 4734.61, 4558.75, 4491.10,
+    4411.61, 4333.01, 4234.63, 4139.10, 4056.80, 4022.49, 3867.96, 3808.27, 3745.27,
+    3692.34, 3645.55, 3618.28, 3574.26, 3504.31, 3452.44, 3401.20, 3382.37, 3340.67,
+    3301.08, 3247.59, 3190.27, 3179.99, 3154.24, 3089.54, 3045.62, 2988.99, 2993.61,
+    2941.35, 2875.60, 2866.33, 2834.12, 2785.15, 2759.65, 2763.20, 2720.14, 2660.14,
+    2690.22, 2635.71, 2632.92, 2574.63, 2555.97, 2545.72, 2513.38, 2491.57, 2496.05,
+    2466.45, 2442.72, 2420.53, 2381.54, 2388.09, 2340.61, 2335.03, 2318.93, 2319.05,
+    2308.23, 2262.23, 2235.78, 2259.27, 2221.05, 2202.69, 2184.29, 2170.07, 2160.05,
+    2127.68, 2134.73, 2101.96, 2101.44, 2066.40, 2074.25, 2063.68, 2048.12, 2031.87
+]
+
+# the default spline fit, `interp_method='interp1d'`
+kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', interp_method='interp1d')
+kneedle.plot_knee_normalized()
+```
+![](images/bumpy_line.png)
+
+```python
+# The same data, only using a polynomial fit this time.
+kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', interp_method='polynomial')
+kneedle.plot_knee_normalized()
+```
+![](images/bumpy_line.smoothed.png)
+
 ## Application
 
 Find the optimal number of clusters (k) to use in k-means clustering.
