@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from codecs import open as copen
 from os import path
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 here = path.abspath(path.dirname(__file__))
 
