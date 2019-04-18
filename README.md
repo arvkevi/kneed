@@ -21,6 +21,8 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Citation](#citation)
 
 ## Installation  
+> Tested with Python 3.5 and 3.6
+
 **anaconda**
 ```bash
 $ conda install -c conda-forge kneed
@@ -36,8 +38,6 @@ $ pip install kneed
 $ git clone https://github.com/arvkevi/kneed.git
 $ python setup.py install
 ```
-
-> Tested with Python 3.5 and 3.6
 
 ## Usage
 These steps introduce how to use `kneed` by reproducing Figure 2 from the manuscript.
@@ -58,7 +58,7 @@ print([round(i, 3) for i in y])
 ```
 
 ### Find Knee  
-Simply instantiating `KneeLocator` with `x`, `y` and the appropriate `curve` and `direction` will find the knee (or elbow) point.  
+The knee (or elbow) point is calculated simply by instantiating the `KneeLocator` class with `x`, `y` and the appropriate `curve` and `direction`.  
 Here, `kneedle.knee` and/or `kneedle.elbow` store the point of maximum curvature.
 
 ```python
