@@ -16,7 +16,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Examples](#examples)
     * [Noisy Gaussian](#noisygaussian)
     * [Polynomial Fit](#polynomial-fit)
-    * [Visualize](#visualize)
+    * [Select k clusters](#select-k-clusters)
 - [Contributing](#contributing)
 - [Citation](#citation)
 
