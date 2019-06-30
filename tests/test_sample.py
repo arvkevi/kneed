@@ -113,3 +113,29 @@ def test_convex_decreasing_bumpy(interp_method, expected):
     kn = KneeLocator(x_bumpy, y_bumpy, curve='convex',
                      direction='decreasing', interp_method=interp_method)
     assert kn.knee == expected
+
+def test_gamma():
+    n = 6000
+    x = range(1, n + 1)
+    y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
+    kn = KneeLocator(x, y, curve='convex', direction='decreasing')
+    print(kn.knee)
+    assert math.isclose(kn.knee, 1000, abs_tol=500.0)
+
+
+def test_sine():
+    x = np.arange(0, 10, 0.1)
+    y_sin = np.sin(x)
+
+    sine_combos =  [
+        ('decreasing', 'convex'),
+        ('increasing', 'convex'),
+        ('increasing', 'concave'),
+        ('decreasing', 'concave')
+    ]
+    expected_knees = [4.5, 4.9, 7.7, 8.1]
+    detected_knees = []
+    for direction, curve in sine_combos:
+        kl_sine = KneeLocator(x, y_sin, S=1, direction=direction, curve=curve)
+        detected_knees.append(kl_sine.knee)
+    assert expected_knees == detected_knees

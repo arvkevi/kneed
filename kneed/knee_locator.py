@@ -33,8 +33,8 @@ class KneeLocator(object):
         self.direction = direction
         self.N = len(self.x)
         self.S = S
-        self.all_knees = []
-        self.all_norm_knees = []
+        self.all_knees = set()
+        self.all_norm_knees = set()
 
         # Step 1: fit a smooth line
         if interp_method == "interp1d":
@@ -106,8 +106,12 @@ class KneeLocator(object):
         # flip decreasing functions to increasing
         if direction == 'decreasing':
             y = np.flip(y)
-        return (x, y)
 
+        if curve == 'convex':
+            x = np.flip(x)
+            y = np.flip(y)
+
+        return (x, y)
 
     def find_knee(self, ):
         """This function finds and returns the knee value, the normalized knee
@@ -125,8 +129,8 @@ class KneeLocator(object):
 
         knee, norm_knee, knee_x = None, None, None
         # artificially place a local max at the last item in the x_distance array
-        self.maxima_inidices = np.append(self.maxima_inidices, len(self.x_distance))
-        self.minima_indices = np.append(self.minima_indices, len(self.x_distance))
+        self.maxima_inidices = np.append(self.maxima_inidices, len(self.x_distance) - 1)
+        self.minima_indices = np.append(self.minima_indices, len(self.x_distance) - 1)
 
         # placeholder for which threshold region i is located in.
         maxima_threshold_index = 0
@@ -150,10 +154,29 @@ class KneeLocator(object):
 
             # evaluate the threshold
             if self.y_distance[idx] < threshold:
-                knee = self.x[threshold_index]
-                self.all_knees.append(knee)
-                norm_knee = self.x_normalized[threshold_index]
-                self.all_norm_knees.append(norm_knee)
+                if self.curve == 'convex':
+                    if self.direction == 'decreasing':
+                        knee = self.x[threshold_index]
+                        self.all_knees.add(knee)
+                        norm_knee = self.x_normalized[threshold_index]
+                        self.all_norm_knees.add(norm_knee)
+                    else:
+                        knee = self.x[-(threshold_index + 1)]
+                        self.all_knees.add(knee)
+                        norm_knee = self.x_normalized[-(threshold_index + 1)]
+                        self.all_norm_knees.add(norm_knee)
+
+                elif self.curve == 'concave':
+                    if self.direction == 'decreasing':
+                        knee = self.x[-(threshold_index + 1)]
+                        self.all_knees.add(knee)
+                        norm_knee = self.x_normalized[-(threshold_index + 1)]
+                        self.all_norm_knees.add(norm_knee)
+                    else:
+                        knee = self.x[threshold_index]
+                        self.all_knees.add(knee)
+                        norm_knee = self.x_normalized[threshold_index]
+                        self.all_norm_knees.add(norm_knee)
 
         return knee, norm_knee
 
