@@ -35,7 +35,6 @@ class KneeLocator(object):
         self.S = S
 
         # Step 1: fit a smooth line
-        #self.Ds_x = np.linspace(np.min(self.x), np.max(self.x), self.N)
         if interp_method == "interp1d":
             uspline = interpolate.interp1d(self.x, self.y)
             self.Ds_y = uspline(self.x)
@@ -148,8 +147,8 @@ class KneeLocator(object):
         plt.figure(figsize=(8, 8))
         plt.plot(self.x_normalized, self.y_normalized)
         plt.plot(self.x_distance, self.y_distance, 'r')
-        plt.xticks(np.arange(min(self.x_normalized), max(self.x_normalized) + 0.1, 0.1))
-        plt.yticks(np.arange(min(self.x_distance), max(self.y_normalized) + 0.1, 0.1))
+        plt.xticks(np.arange(self.x_normalized.min(), self.x_normalized.max() + 0.1, 0.1))
+        plt.yticks(np.arange(self.y_distance.min(), self.y_normalized.max() + 0.1, 0.1))
 
         plt.vlines(self.norm_knee, plt.ylim()[0], plt.ylim()[1])
 
