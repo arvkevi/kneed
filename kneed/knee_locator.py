@@ -33,6 +33,8 @@ class KneeLocator(object):
         self.direction = direction
         self.N = len(self.x)
         self.S = S
+        self.all_knees = []
+        self.all_norm_knees = []
 
         # Step 1: fit a smooth line
         if interp_method == "interp1d":
@@ -57,16 +59,17 @@ class KneeLocator(object):
         self.y_normalized = self.__normalize(self.Ds_y)
 
         # Step 3: Calculate the Difference curve
-        # convert elbows to knees
-        if self.curve == 'convex':
-            self.x_normalized = self.x_normalized.max() - self.x_normalized
-            self.y_normalized = self.y_normalized.max() - self.y_normalized
-        # flip decreasing functions to increasing
-        if self.direction == 'decreasing':
-            self.y_normalized = np.flip(self.y_normalized)
+        # # convert elbows to knees
+        # if self.curve == 'convex':
+        #     self.x_normalized = self.x_normalized.max() - self.x_normalized
+        #     self.y_normalized = self.y_normalized.max() - self.y_normalized
+        # # flip decreasing functions to increasing
+        # if self.direction == 'decreasing':
+        #     self.y_normalized = np.flip(self.y_normalized)
+        self.x_normalized, self.y_normalized = self.transform_xy(self.x_normalized, self.y_normalized, self.direction, self.curve)
         # normalized difference curve
         self.y_distance = self.y_normalized - self.x_normalized
-        self.x_distance = self.x_normalized
+        self.x_distance = self.x_normalized.copy()
 
         # Step 4: Identify local maxima/minima
         # local maxima
@@ -83,7 +86,7 @@ class KneeLocator(object):
         self.Tmx = self.y_distance_maxima - (self.S * np.abs(np.diff(self.x_normalized).mean()))
 
         # Step 6: find knee
-        self.knee, self.norm_knee, self.knee_x = self.find_knee()
+        self.knee, self.norm_knee = self.find_knee()
 
     @staticmethod
     def __normalize(a):
@@ -92,6 +95,19 @@ class KneeLocator(object):
         :type a: array
         """
         return (a - min(a)) / (max(a) - min(a))
+
+    @staticmethod
+    def transform_xy(x, y, direction, curve):
+        """transform x and y to concave, increasing based on given direction and curve"""
+        # convert elbows to knees
+        if curve == 'convex':
+            x = x.max() - x
+            y = y.max() - y
+        # flip decreasing functions to increasing
+        if direction == 'decreasing':
+            y = np.flip(y)
+        return (x, y)
+
 
     def find_knee(self, ):
         """This function finds and returns the knee value, the normalized knee
@@ -107,36 +123,39 @@ class KneeLocator(object):
                           "Also check that you aren't mistakenly setting the curve argument", RuntimeWarning)
             return None, None, None
 
-        mxmx_iter = np.arange(self.maxima_inidices[0], len(self.x_normalized))
-        xmx_idx_iter = np.append(self.maxima_inidices, len(self.x_normalized))
+        knee, norm_knee, knee_x = None, None, None
+        # artificially place a local max at the last item in the x_distance array
+        self.maxima_inidices = np.append(self.maxima_inidices, len(self.x_distance))
+        self.minima_indices = np.append(self.minima_indices, len(self.x_distance))
 
-        knee_, norm_knee_, knee_x = 0.0, 0.0, None
-        for mxmx_i, mxmx in enumerate(xmx_idx_iter):
-            # stopping criteria for exhasuting array
-            if mxmx_i == len(xmx_idx_iter) - 1:
+        # placeholder for which threshold region i is located in.
+        maxima_threshold_index = 0
+        minima_threshold_index = 0
+        # traverse the distance curve
+        for idx, i in enumerate(self.x_distance):
+            if i == 1.0:
                 break
-            # indices between maxima/minima
-            idxs = (mxmx_iter > xmx_idx_iter[mxmx_i]) * \
-                (mxmx_iter < xmx_idx_iter[mxmx_i + 1])
-            between_local_mx = mxmx_iter[np.where(idxs)]
+            # values in distance curve are at or after a local maximum
+            if idx >= self.maxima_inidices[maxima_threshold_index]:
+                threshold = self.Tmx[maxima_threshold_index]
+                threshold_index = idx
+                maxima_threshold_index += 1
+            # values in distance curve are at or after a local minimum
+            if idx >= self.minima_indices[minima_threshold_index]:
+                threshold = 0.0
+                minima_threshold_index += 1
+            # Do not evaluate values in the distance curve before the first local maximum.
+            if idx < self.maxima_inidices[0]:
+                continue
 
-            for j in between_local_mx:
-                if j in self.minima_indices:
-                    # reached a minima, x indices are unique
-                    # only need to check if j is a min
-                    if self.y_distance[j + 1] > self.y_distance[j]:
-                        self.Tmx[mxmx_i] = 0
-                        knee_x = None  # reset x where y_distance crossed Tmx
-                    elif self.y_distance[j + 1] <= self.y_distance[j]:
-                        warnings.warn("If this is a minima, "
-                                      "how would you ever get here:", RuntimeWarning)
-                if self.y_distance[j] < self.Tmx[mxmx_i] or self.Tmx[mxmx_i] < 0:
-                    # declare a knee
-                    if not knee_x:
-                        knee_x = j
-                    knee_ = self.x[self.maxima_inidices[mxmx_i]]
-                    norm_knee_ = self.x_normalized[self.maxima_inidices[mxmx_i]]
-        return knee_, norm_knee_, knee_x
+            # evaluate the threshold
+            if self.y_distance[idx] < threshold:
+                knee = self.x[threshold_index]
+                self.all_knees.append(knee)
+                norm_knee = self.x_normalized[threshold_index]
+                self.all_norm_knees.append(norm_knee)
+
+        return knee, norm_knee
 
     def plot_knee_normalized(self, ):
         """Plot the normalized curve, the distance curve (x_distance, y_normalized) and the
@@ -171,5 +190,9 @@ class KneeLocator(object):
         return self.norm_knee
 
     @property
-    def elbow_x(self):
-        return self.knee_x
+    def all_elbows(self):
+        return self.all_elbows
+
+    @property
+    def all_norm_elbows(self):
+        return self.all_norm_elbows
