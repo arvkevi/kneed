@@ -119,7 +119,6 @@ def test_gamma():
     x = range(1, n + 1)
     y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
     kn = KneeLocator(x, y, curve='convex', direction='decreasing')
-    print(kn.knee)
     assert math.isclose(kn.knee, 1000, abs_tol=500.0)
 
 
