@@ -59,13 +59,6 @@ class KneeLocator(object):
         self.y_normalized = self.__normalize(self.Ds_y)
 
         # Step 3: Calculate the Difference curve
-        # # convert elbows to knees
-        # if self.curve == 'convex':
-        #     self.x_normalized = self.x_normalized.max() - self.x_normalized
-        #     self.y_normalized = self.y_normalized.max() - self.y_normalized
-        # # flip decreasing functions to increasing
-        # if self.direction == 'decreasing':
-        #     self.y_normalized = np.flip(self.y_normalized)
         self.x_normalized, self.y_normalized = self.transform_xy(self.x_normalized, self.y_normalized, self.direction, self.curve)
         # normalized difference curve
         self.y_distance = self.y_normalized - self.x_normalized
