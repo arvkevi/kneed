@@ -60,48 +60,48 @@ def test_concave_decreasing(interp_method):
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_convex_increasing(interp_method):
     """test a convex increasing function"""
-    kn = KneeLocator(x, y_convex_inc, curve='convex', interp_method=interp_method)
-    assert kn.knee == 7
+    kl = KneeLocator(x, y_convex_inc, curve='convex', interp_method=interp_method)
+    assert kl.knee == 7
 
 
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_convex_decreasing(interp_method):
     """test a convex decreasing function"""
-    kn = KneeLocator(x, y_convex_dec, curve='convex',
+    kl = KneeLocator(x, y_convex_dec, curve='convex',
                      direction='decreasing', interp_method=interp_method)
-    assert kn.knee == 2
+    assert kl.knee == 2
 
 
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_concave_increasing_truncated(interp_method):
     """test a truncated concave increasing function"""
-    kn = KneeLocator(x[:-3] / 10, y_concave_inc[:-3] / 10,
+    kl = KneeLocator(x[:-3] / 10, y_concave_inc[:-3] / 10,
                      curve='concave', interp_method=interp_method)
-    assert kn.knee == 0.2
+    assert kl.knee == 0.2
 
 
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_concave_decreasing_truncated(interp_method):
     """test a truncated concave decreasing function"""
-    kn = KneeLocator(x[:-3] / 10, y_concave_dec[:-3] / 10,
+    kl = KneeLocator(x[:-3] / 10, y_concave_dec[:-3] / 10,
                      curve='concave', direction='decreasing', interp_method=interp_method)
-    assert kn.knee == 0.4
+    assert kl.knee == 0.4
 
 
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_convex_increasing_truncated(interp_method):
     """test a truncated convex increasing function"""
-    kn = KneeLocator(x[:-3] / 10, y_convex_inc[:-3] / 10,
+    kl = KneeLocator(x[:-3] / 10, y_convex_inc[:-3] / 10,
                      curve='convex', interp_method=interp_method)
-    assert kn.knee == 0.4
+    assert kl.knee == 0.4
 
 
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_convex_decreasing_truncated(interp_method):
     """test a truncated convex decreasing function"""
-    kn = KneeLocator(x[:-3] / 10, y_convex_dec[:-3] / 10,
+    kl = KneeLocator(x[:-3] / 10, y_convex_dec[:-3] / 10,
                      curve='convex', direction='decreasing', interp_method=interp_method)
-    assert kn.knee == 0.2
+    assert kl.knee == 0.2
 
 
 @pytest.mark.parametrize("interp_method, expected", [
@@ -110,17 +110,17 @@ def test_convex_decreasing_truncated(interp_method):
 ])
 def test_convex_decreasing_bumpy(interp_method, expected):
     """test a bumpy convex decreasing function"""
-    kn = KneeLocator(x_bumpy, y_bumpy, curve='convex',
+    kl = KneeLocator(x_bumpy, y_bumpy, curve='convex',
                      direction='decreasing', interp_method=interp_method)
-    assert kn.knee == expected
+    assert kl.knee == expected
+
 
 def test_gamma():
     n = 6000
     x = range(1, n + 1)
     y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
-    kn = KneeLocator(x, y, curve='convex', direction='decreasing')
-    assert math.isclose(kn.knee, 1000, abs_tol=500.0)
-
+    kl = KneeLocator(x, y, curve='convex', direction='decreasing')
+    assert math.isclose(kl.knee, 1000, abs_tol=500.0)
 
 
 def test_sine():
