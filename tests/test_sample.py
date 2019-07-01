@@ -122,6 +122,7 @@ def test_gamma():
     assert math.isclose(kn.knee, 1000, abs_tol=500.0)
 
 
+
 def test_sine():
     x = np.arange(0, 10, 0.1)
     y_sin = np.sin(x)
