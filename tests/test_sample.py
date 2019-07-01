@@ -132,9 +132,9 @@ def test_sine():
         ('increasing', 'concave'),
         ('decreasing', 'concave')
     ]
-    expected_knees = [4.5, 4.9, 7.7, 8.1]
+    expected_knees = [4.5, 4.9, 1.4, 7.7, 8.1, 1.8]
     detected_knees = []
     for direction, curve in sine_combos:
         kl_sine = KneeLocator(x, y_sin, S=1, direction=direction, curve=curve)
-        detected_knees.append(kl_sine.knee)
-    assert expected_knees == detected_knees
+        detected_knees.extend(kl_sine.all_knees)
+    assert np.isclose(expected_knees, detected_knees).all()
