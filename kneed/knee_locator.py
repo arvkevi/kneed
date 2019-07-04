@@ -207,8 +207,8 @@ class KneeLocator(object):
 
     @property
     def all_elbows(self):
-        return self.all_elbows
+        return self.all_knees
 
     @property
     def all_norm_elbows(self):
-        return self.all_norm_elbows
+        return self.all_norm_knees
