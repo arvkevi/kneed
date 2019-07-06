@@ -12,6 +12,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Usage](#usage)
     * [Input Data](#input-data)
     * [Find Knee](#find-knee)
+    * [Sensitivity parameter (S)](#sensitivity-parameter-s)
     * [Visualize](#visualize)
 - [Examples](#examples)
     * [Noisy Gaussian](#noisygaussian)
@@ -70,6 +71,52 @@ print(round(kneedle.knee, 3))
 print(round(kneedle.elbow, 3))
 0.222
 ```
+
+### Sensitivity Parameter (S)
+The knee point selected is tunable by setting the sensitivity parameter **S**. 
+From the manuscript:
+> The sensitivity parameter allows us to adjust how aggressive we want Kneedle
+to be when detecting knees. Smaller values for S detect
+knees quicker, while larger values are more conservative.
+Put simply, S is a measure of how many “flat” points we
+expect to see in the unmodified data curve before declaring
+a knee.
+
+```python
+import numpy as np
+np.random.seed(23)
+
+sensitivity = [1, 3, 5, 10, 100, 200, 400]
+knees = []
+norm_knees = []
+
+n = 1000
+x = range(1, n + 1)
+y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
+for s in sensitivity:
+    kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=s)
+    knees.append(kl.knee)
+    norm_knees.append(kl.norm_knee)
+
+print(knees)
+[43, 137, 178, 258, 305, 482, 482]
+
+print([nk.round(2) for nk in norm_knees])
+[0.04, 0.14, 0.18, 0.26, 0.3, 0.48, 0.48]
+
+import matplotlib.pyplot as plt
+plt.style.use('ggplot');
+plt.figure(figsize=(8, 6));
+plt.plot(kl.x_normalized, kl.y_normalized);
+plt.plot(kl.x_distance, kl.y_distance);
+colors = ['r', 'g', 'k', 'm', 'c', 'orange']
+for k, c, s in zip(norm_knees, colors, sensitivity):
+    plt.vlines(k, 0, 1, linestyles='--', colors=c, label=f'S = {s}');
+plt.legend();
+```
+![](images/S_parameter.png)
+
+Notice that any **S**>200 will result in a knee at 482 in the plot above.
 
 ### Visualize
 The `KneeLocator` class also has two plotting functions for quick visualizations.

@@ -79,7 +79,8 @@ class KneeLocator(object):
         self.Tmx = self.y_distance_maxima - (self.S * np.abs(np.diff(self.x_normalized).mean()))
 
         # Step 6: find knee
-        self.knee, self.norm_knee = self.find_knee()
+        self.find_knee()
+        self.knee, self.norm_knee = min(self.all_knees), min(self.all_norm_knees)
 
     @staticmethod
     def __normalize(a):
@@ -104,23 +105,17 @@ class KneeLocator(object):
             x = np.flip(x)
             y = np.flip(y)
 
-        return (x, y)
+        return x, y
 
     def find_knee(self, ):
-        """This function finds and returns the knee value, the normalized knee
-        value, and the x value where the knee is located.
-        :returns: tuple(knee, norm_knee, knee_x)
-        :rtype: (float, float, int)
-        )
-        """
+        """This function finds and sets the knee value and the normalized knee value. """
         if not self.maxima_inidices.size:
             warnings.warn("No local maxima found in the distance curve\n"
                           "The line is probably not polynomial, try plotting\n"
                           "the distance curve with plt.plot(knee.x_distance, knee.y_distance)\n"
                           "Also check that you aren't mistakenly setting the curve argument", RuntimeWarning)
-            return None, None, None
+            return None, None
 
-        knee, norm_knee, knee_x = None, None, None
         # artificially place a local max at the last item in the x_distance array
         self.maxima_inidices = np.append(self.maxima_inidices, len(self.x_distance) - 1)
         self.minima_indices = np.append(self.minima_indices, len(self.x_distance) - 1)
@@ -130,6 +125,7 @@ class KneeLocator(object):
         minima_threshold_index = 0
         # traverse the distance curve
         for idx, i in enumerate(self.x_distance):
+            # reached the end of the curve
             if i == 1.0:
                 break
             # values in distance curve are at or after a local maximum
@@ -171,7 +167,8 @@ class KneeLocator(object):
                         norm_knee = self.x_normalized[threshold_index]
                         self.all_norm_knees.add(norm_knee)
 
-        return knee, norm_knee
+        if self.all_knees == set():
+            warnings.warn('No knee/elbow found')
 
     def plot_knee_normalized(self, ):
         """Plot the normalized curve, the distance curve (x_distance, y_normalized) and the
@@ -179,21 +176,24 @@ class KneeLocator(object):
         """
         import matplotlib.pyplot as plt
 
-        plt.figure(figsize=(8, 8))
-        plt.plot(self.x_normalized, self.y_normalized)
-        plt.plot(self.x_distance, self.y_distance, 'r')
+        plt.figure(figsize=(6, 6))
+        plt.title('Normalized Knee Point')
+        plt.plot(self.x_normalized, self.y_normalized, 'b', label='normalized curve')
+        plt.plot(self.x_distance, self.y_distance, 'r', label='difference curve')
         plt.xticks(np.arange(self.x_normalized.min(), self.x_normalized.max() + 0.1, 0.1))
         plt.yticks(np.arange(self.y_distance.min(), self.y_normalized.max() + 0.1, 0.1))
 
-        plt.vlines(self.norm_knee, plt.ylim()[0], plt.ylim()[1])
+        plt.vlines(self.norm_knee, plt.ylim()[0], plt.ylim()[1], linestyles='--', label='knee/elbow')
+        plt.legend(loc='best')
 
     def plot_knee(self, ):
         """Plot the curve and the knee, if it exists"""
         import matplotlib.pyplot as plt
-
-        plt.figure(figsize=(8, 8))
-        plt.plot(self.x, self.y)
-        plt.vlines(self.knee, plt.ylim()[0], plt.ylim()[1])
+        plt.figure(figsize=(6, 6))
+        plt.title('Knee Point')
+        plt.plot(self.x, self.y, 'b', label='data')
+        plt.vlines(self.knee, plt.ylim()[0], plt.ylim()[1], linestyles='--', label='knee/elbow')
+        plt.legend(loc='best')
 
     # Niceties for users working with elbows rather than knees
 

@@ -105,7 +105,7 @@ def test_convex_decreasing_truncated(interp_method):
 
 
 @pytest.mark.parametrize("interp_method, expected", [
-    ('interp1d', 53),
+    ('interp1d', 31),
     ('polynomial', 28)
 ])
 def test_convex_decreasing_bumpy(interp_method, expected):
@@ -116,11 +116,27 @@ def test_convex_decreasing_bumpy(interp_method, expected):
 
 
 def test_gamma():
-    n = 6000
+    np.random.seed(23)
+    n = 1000
     x = range(1, n + 1)
     y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
     kl = KneeLocator(x, y, curve='convex', direction='decreasing')
-    assert math.isclose(kl.knee, 1000, abs_tol=500.0)
+    assert kl.knee == 43
+
+
+def test_sensitivity():
+    """Test the S parameter -- where S is the number of flat points to identify before calling a knee"""
+    np.random.seed(23)
+    sensitivity = [1, 3, 5, 10, 100, 200, 400]
+    detected_knees = []
+    expected_knees = [43, 137, 178, 258, 305, 482, 482]
+    n = 1000
+    x = range(1, n + 1)
+    y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
+    for s, expected_knee in zip(sensitivity, expected_knees):
+        kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=s)
+        detected_knees.append(kl.knee)
+        assert kl.knee, expected_knee
 
 
 def test_sine():
@@ -136,6 +152,6 @@ def test_sine():
     expected_knees = [4.5, 4.9, 1.4, 7.7, 8.1, 1.8]
     detected_knees = []
     for direction, curve in sine_combos:
-        kl_sine = KneeLocator(x, y_sin, S=1, direction=direction, curve=curve)
+        kl_sine = KneeLocator(x, y_sin, direction=direction, curve=curve, S=1)
         detected_knees.extend(kl_sine.all_knees)
     assert np.isclose(expected_knees, detected_knees).all()
