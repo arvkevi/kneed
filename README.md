@@ -74,6 +74,7 @@ print(round(kneedle.elbow, 3))
 
 ### Visualize
 The `KneeLocator` class also has two plotting functions for quick visualizations.
+**Note that all (x, y) are transformed for the normalized plots**
 ```python
 # Normalized data, normalized knee, and normalized distance curve.
 kneedle.plot_knee_normalized()
