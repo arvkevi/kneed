@@ -2,7 +2,6 @@ from setuptools import setup, find_packages
 from codecs import open as copen
 from os import path
 
-__version__ = '0.4.0'
 
 here = path.abspath(path.dirname(__file__))
 
@@ -18,14 +17,18 @@ install_requires = [x.strip() for x in all_reqs if 'git+' not in x]
 dependency_links = [x.strip().replace('git+', '')
                     for x in all_reqs if x.startswith('git+')]
 
+version = {}
+with open("kneed/version.py") as fp:
+    exec(fp.read(), version)
+
 setup(
     name='kneed',
-    version=__version__,
+    version=version['__version__'],
     description='Knee-point detection in Python',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/arvkevi/kneed',
-    download_url='https://github.com/arvkevi/kneed/tarball/' + __version__,
+    download_url='https://github.com/arvkevi/kneed/tarball/' + version['__version__'],
     license='BSD',
     classifiers=[
         'Development Status :: 3 - Alpha',
