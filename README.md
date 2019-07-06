@@ -14,8 +14,9 @@ This repository is an attempt to implement the kneedle algorithm, published [her
     * [Find Knee](#find-knee)
     * [Visualize](#visualize)
 - [Examples](#examples)
-    * [Noisy Gaussian](#noisygaussian)
+    * [Sensitivity parameter (S)](#sensitivity-parameter-s)
     * [Polynomial Fit](#polynomial-fit)
+    * [Noisy Gaussian](#noisygaussian)
     * [Select k clusters](#select-k-clusters)
 - [Contributing](#contributing)
 - [Citation](#citation)
@@ -73,6 +74,7 @@ print(round(kneedle.elbow, 3))
 
 ### Visualize
 The `KneeLocator` class also has two plotting functions for quick visualizations.
+**Note that all (x, y) are transformed for the normalized plots**
 ```python
 # Normalized data, normalized knee, and normalized distance curve.
 kneedle.plot_knee_normalized()
@@ -88,20 +90,51 @@ kneedle.plot_knee()
 ![](images/figure2.knee.raw.png)
 
 ## Examples
-### NoisyGaussian
-Figure 3 from the manuscript estimates the knee to be `x=60` for a `NoisyGaussian`.
-This simulate 5,000 `NoisyGaussian` instances and finds the average.
-```python
-knees = []
-for i in range(5):
-    x, y = DataGenerator.noisy_gaussian(mu=50, sigma=10, N=1000)
-    kneedle = KneeLocator(x, y, curve='concave', direction='increasing')
-    knees.append(kneedle.knee)
+### Sensitivity Parameter (S)
+The knee point selected is tunable by setting the sensitivity parameter **S**. 
+From the manuscript:
+> The sensitivity parameter allows us to adjust how aggressive we want Kneedle
+to be when detecting knees. Smaller values for S detect
+knees quicker, while larger values are more conservative.
+Put simply, S is a measure of how many “flat” points we
+expect to see in the unmodified data curve before declaring
+a knee.
 
-# average knee point
-round(sum(knees) / len(knees), 3)
-60.921
+```python
+import numpy as np
+np.random.seed(23)
+
+sensitivity = [1, 3, 5, 10, 100, 200, 400]
+knees = []
+norm_knees = []
+
+n = 1000
+x = range(1, n + 1)
+y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
+for s in sensitivity:
+    kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=s)
+    knees.append(kl.knee)
+    norm_knees.append(kl.norm_knee)
+
+print(knees)
+[43, 137, 178, 258, 305, 482, 482]
+
+print([nk.round(2) for nk in norm_knees])
+[0.04, 0.14, 0.18, 0.26, 0.3, 0.48, 0.48]
+
+import matplotlib.pyplot as plt
+plt.style.use('ggplot');
+plt.figure(figsize=(8, 6));
+plt.plot(kl.x_normalized, kl.y_normalized);
+plt.plot(kl.x_distance, kl.y_distance);
+colors = ['r', 'g', 'k', 'm', 'c', 'orange']
+for k, c, s in zip(norm_knees, colors, sensitivity):
+    plt.vlines(k, 0, 1, linestyles='--', colors=c, label=f'S = {s}');
+plt.legend();
 ```
+![](images/S_parameter.png)
+
+Notice that any **S**>200 will result in a knee at 482 (0.48, normalized) in the plot above.
 
 ### Polynomial Fit
 Here is an example of a "bumpy" or "noisy" line where the default `scipy.interpolate.interp1d` spline fitting method does not provide the best estimate for the point of maximum curvature.
@@ -134,6 +167,21 @@ kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', inter
 kneedle.plot_knee_normalized()
 ```
 ![](images/bumpy_line.smoothed.png)
+
+### NoisyGaussian
+Figure 3 from the manuscript estimates the knee to be `x=60` for a `NoisyGaussian`.
+This simulate 5,000 `NoisyGaussian` instances and finds the average.
+```python
+knees = []
+for i in range(5):
+    x, y = DataGenerator.noisy_gaussian(mu=50, sigma=10, N=1000)
+    kneedle = KneeLocator(x, y, curve='concave', direction='increasing', interp_method='polynomial')
+    knees.append(kneedle.knee)
+
+# average knee point
+round(sum(knees) / len(knees), 3)
+60.921
+```
 
 ### Select k clusters
 
