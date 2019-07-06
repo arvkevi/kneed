@@ -171,9 +171,7 @@ class KneeLocator(object):
             warnings.warn('No knee/elbow found')
 
     def plot_knee_normalized(self, ):
-        """Plot the normalized curve, the distance curve (x_distance, y_normalized) and the
-        knee, if it exists.
-        """
+        """Plot the normalized curve, the distance curve (x_distance, y_normalized) and the knee, if it exists."""
         import matplotlib.pyplot as plt
 
         plt.figure(figsize=(6, 6))
@@ -196,7 +194,6 @@ class KneeLocator(object):
         plt.legend(loc='best')
 
     # Niceties for users working with elbows rather than knees
-
     @property
     def elbow(self):
         return self.knee

@@ -12,9 +12,9 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Usage](#usage)
     * [Input Data](#input-data)
     * [Find Knee](#find-knee)
-    * [Sensitivity parameter (S)](#sensitivity-parameter-s)
     * [Visualize](#visualize)
 - [Examples](#examples)
+    * [Sensitivity parameter (S)](#sensitivity-parameter-s)
     * [Noisy Gaussian](#noisygaussian)
     * [Polynomial Fit](#polynomial-fit)
     * [Select k clusters](#select-k-clusters)
@@ -72,6 +72,23 @@ print(round(kneedle.elbow, 3))
 0.222
 ```
 
+### Visualize
+The `KneeLocator` class also has two plotting functions for quick visualizations.
+```python
+# Normalized data, normalized knee, and normalized distance curve.
+kneedle.plot_knee_normalized()
+```
+
+![](images/figure2.knee.png)
+
+```python
+# Raw data and knee.
+kneedle.plot_knee()
+```
+
+![](images/figure2.knee.raw.png)
+
+## Examples
 ### Sensitivity Parameter (S)
 The knee point selected is tunable by setting the sensitivity parameter **S**. 
 From the manuscript:
@@ -116,25 +133,8 @@ plt.legend();
 ```
 ![](images/S_parameter.png)
 
-Notice that any **S**>200 will result in a knee at 482 in the plot above.
+Notice that any **S**>200 will result in a knee at 482 (0.48, normalized) in the plot above.
 
-### Visualize
-The `KneeLocator` class also has two plotting functions for quick visualizations.
-```python
-# Normalized data, normalized knee, and normalized distance curve.
-kneedle.plot_knee_normalized()
-```
-
-![](images/figure2.knee.png)
-
-```python
-# Raw data and knee.
-kneedle.plot_knee()
-```
-
-![](images/figure2.knee.raw.png)
-
-## Examples
 ### NoisyGaussian
 Figure 3 from the manuscript estimates the knee to be `x=60` for a `NoisyGaussian`.
 This simulate 5,000 `NoisyGaussian` instances and finds the average.
