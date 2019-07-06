@@ -15,8 +15,8 @@ This repository is an attempt to implement the kneedle algorithm, published [her
     * [Visualize](#visualize)
 - [Examples](#examples)
     * [Sensitivity parameter (S)](#sensitivity-parameter-s)
-    * [Noisy Gaussian](#noisygaussian)
     * [Polynomial Fit](#polynomial-fit)
+    * [Noisy Gaussian](#noisygaussian)
     * [Select k clusters](#select-k-clusters)
 - [Contributing](#contributing)
 - [Citation](#citation)
@@ -135,21 +135,6 @@ plt.legend();
 
 Notice that any **S**>200 will result in a knee at 482 (0.48, normalized) in the plot above.
 
-### NoisyGaussian
-Figure 3 from the manuscript estimates the knee to be `x=60` for a `NoisyGaussian`.
-This simulate 5,000 `NoisyGaussian` instances and finds the average.
-```python
-knees = []
-for i in range(5):
-    x, y = DataGenerator.noisy_gaussian(mu=50, sigma=10, N=1000)
-    kneedle = KneeLocator(x, y, curve='concave', direction='increasing')
-    knees.append(kneedle.knee)
-
-# average knee point
-round(sum(knees) / len(knees), 3)
-60.921
-```
-
 ### Polynomial Fit
 Here is an example of a "bumpy" or "noisy" line where the default `scipy.interpolate.interp1d` spline fitting method does not provide the best estimate for the point of maximum curvature.
 This example demonstrates that setting the parameter `interp_method='polynomial'` will choose a more accurate point by smoothing the line.
@@ -181,6 +166,21 @@ kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', inter
 kneedle.plot_knee_normalized()
 ```
 ![](images/bumpy_line.smoothed.png)
+
+### NoisyGaussian
+Figure 3 from the manuscript estimates the knee to be `x=60` for a `NoisyGaussian`.
+This simulate 5,000 `NoisyGaussian` instances and finds the average.
+```python
+knees = []
+for i in range(5):
+    x, y = DataGenerator.noisy_gaussian(mu=50, sigma=10, N=1000)
+    kneedle = KneeLocator(x, y, curve='concave', direction='increasing', interp_method='polynomial')
+    knees.append(kneedle.knee)
+
+# average knee point
+round(sum(knees) / len(knees), 3)
+60.921
+```
 
 ### Select k clusters
 
