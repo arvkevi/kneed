@@ -43,3 +43,64 @@ class DataGenerator(object):
         x = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]
         y = [2314, 802, 519, 417, 358, 318, 302, 284, 280]
         return x, y
+
+    @staticmethod
+    def convex_increasing():
+        """Generate a sample increasing convex function
+        :returns: tuple(x, y)
+        :rtypes: (array, array)
+        """
+        x = np.arange(0, 10)
+        y_convex_inc = np.array([1, 2, 3, 4, 5, 10, 15, 20, 40, 100])
+        return x, y_convex_inc
+
+    @staticmethod
+    def convex_decreasing():
+        """Generate a sample decreasing convex function
+        :returns: tuple(x, y)
+        :rtypes: (array, array)
+        """
+        x = np.arange(0, 10)
+        y_convex_dec = np.array([100, 40, 20, 15, 10, 5, 4, 3, 2, 1])
+        return x, y_convex_dec
+
+    @staticmethod
+    def concave_decreasing():
+        """Generate a sample decreasing concave function
+        :returns: tuple(x, y)
+        :rtypes: (array, array)
+        """
+        x = np.arange(0, 10)
+        y_concave_dec = np.array([99, 98, 97, 96, 95, 90, 85, 80, 60, 0])
+        return x, y_concave_dec
+
+    @staticmethod
+    def concave_increasing():
+        """Generate a sample increasing concave function
+        :returns: tuple(x, y)
+        :rtypes: (array, array)
+        """
+        x = np.arange(0, 10)
+        y_concave_inc = np.array([0, 60, 80, 85, 90, 95, 96, 97, 98, 99])
+        return x, y_concave_inc
+
+    @staticmethod
+    def bumpy():
+        """Generate a sample function with local minima/maxima
+        :returns: tuple(x, y)
+        :rtypes: (array, array)
+        """
+        x_bumpy = list(range(90))
+        y_bumpy = [7305., 6979., 6666.6, 6463.2, 6326.5, 6048.8, 6032.8, 5762.,
+                   5742.8, 5398.2, 5256.8, 5227., 5001.7, 4942., 4854.2, 4734.6,
+                   4558.7, 4491.1, 4411.6, 4333., 4234.6, 4139.1, 4056.8, 4022.5,
+                   3868., 3808.3, 3745.3, 3692.3, 3645.6, 3618.3, 3574.3, 3504.3,
+                   3452.4, 3401.2, 3382.4, 3340.7, 3301.1, 3247.6, 3190.3, 3180.,
+                   3154.2, 3089.5, 3045.6, 2989., 2993.6, 2941.3, 2875.6, 2866.3,
+                   2834.1, 2785.1, 2759.7, 2763.2, 2720.1, 2660.1, 2690.2, 2635.7,
+                   2632.9, 2574.6, 2556., 2545.7, 2513.4, 2491.6, 2496., 2466.5,
+                   2442.7, 2420.5, 2381.5, 2388.1, 2340.6, 2335., 2318.9, 2319.,
+                   2308.2, 2262.2, 2235.8, 2259.3, 2221., 2202.7, 2184.3, 2170.1,
+                   2160., 2127.7, 2134.7, 2102., 2101.4, 2066.4, 2074.3, 2063.7,
+                   2048.1, 2031.9]
+        return x_bumpy, y_bumpy
