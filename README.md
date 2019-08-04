@@ -22,7 +22,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Citation](#citation)
 
 ## Installation  
-> Tested with Python 3.5 and 3.6
+> Tested with Python 3.5, 3.6, and 3.7
 
 **anaconda**
 ```bash
