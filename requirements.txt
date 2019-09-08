@@ -1,5 +1,4 @@
 matplotlib
 numpy>=1.14.2
-pytest
 scikit-learn
 scipy
