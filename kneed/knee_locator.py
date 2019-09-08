@@ -99,11 +99,11 @@ class KneeLocator(object):
             y = y.max() - y
         # flip decreasing functions to increasing
         if direction == 'decreasing':
-            y = np.flip(y)
+            y = np.flip(y, axis=0)
 
         if curve == 'convex':
-            x = np.flip(x)
-            y = np.flip(y)
+            x = np.flip(x, axis=0)
+            y = np.flip(y, axis=0)
 
         return x, y
 
