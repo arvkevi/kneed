@@ -24,6 +24,9 @@ lib
 lib64
 dist/
 
+#pyenv
+.python-version
+
 # Installer logs
 pip-log.txt
 
