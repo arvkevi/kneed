@@ -137,3 +137,10 @@ def test_sine():
         kl_sine = KneeLocator(x, y_sin, direction=direction, curve=curve, S=1)
         detected_knees.extend(kl_sine.all_knees)
     assert np.isclose(expected_knees, detected_knees).all()
+
+
+def test_list_input():
+    """Indirectly test that flip works on lists as input"""
+    x, y = dg.figure2()
+    kl = KneeLocator(x.tolist(), y.tolist(), S=1.0, curve='concave', interp_method='polynomial')
+    assert math.isclose(kl.knee, 0.22, rel_tol=0.05)
