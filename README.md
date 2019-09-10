@@ -196,7 +196,8 @@ KneeLocator(x, y, curve='convex', direction='decreasing')
 
 ## Contributing
 
-Contributions are welcome, if you have suggestions or would like to make improvements please submit an issue or pull request.                             
+Contributions are welcome, please refer to [CONTRIBUTING](https://github.com/arvkevi/kneed/blob/master/CONTRIBUTING.md) 
+to learn more about how to contribute.                            
 
 ## Citation
 
