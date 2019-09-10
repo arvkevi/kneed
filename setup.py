@@ -41,6 +41,7 @@ setup(
     include_package_data=True,
     author='Kevin Arvai',
     install_requires=install_requires,
+    tests_requires=['pytest'],
     dependency_links=dependency_links,
     author_email='arvkevi@gmail.com'
 )
