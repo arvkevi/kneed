@@ -5,7 +5,7 @@
 
 This repository is an attempt to implement the kneedle algorithm, published [here](https://www1.icsi.berkeley.edu/~barath/papers/kneedle-simplex11.pdf). Given a set of `x` and `y` values, `kneed` will return the knee point of the function. The knee point is the point of maximum curvature.
 
-![](images/functions_args_summary.png)
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/functions_args_summary.png)
 
 ## Table of contents
 - [Installation](#installation)
@@ -80,14 +80,14 @@ The `KneeLocator` class also has two plotting functions for quick visualizations
 kneedle.plot_knee_normalized()
 ```
 
-![](images/figure2.knee.png)
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/figure2.knee.png)
 
 ```python
 # Raw data and knee.
 kneedle.plot_knee()
 ```
 
-![](images/figure2.knee.raw.png)
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/figure2.knee.raw.png)
 
 ## Examples
 ### Sensitivity Parameter (S)
@@ -132,7 +132,7 @@ for k, c, s in zip(norm_knees, colors, sensitivity):
     plt.vlines(k, 0, 1, linestyles='--', colors=c, label=f'S = {s}');
 plt.legend();
 ```
-![](images/S_parameter.png)
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/S_parameter.png)
 
 Notice that any **S**>200 will result in a knee at 482 (0.48, normalized) in the plot above.
 
@@ -159,14 +159,14 @@ y = [
 kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', interp_method='interp1d')
 kneedle.plot_knee_normalized()
 ```
-![](images/bumpy_line.png)
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/bumpy_line.png)
 
 ```python
 # The same data, only using a polynomial fit this time.
 kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', interp_method='polynomial')
 kneedle.plot_knee_normalized()
 ```
-![](images/bumpy_line.smoothed.png)
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/bumpy_line.smoothed.png)
 
 ### NoisyGaussian
 Figure 3 from the manuscript estimates the knee to be `x=60` for a `NoisyGaussian`.
@@ -192,7 +192,7 @@ See the [tutorial in the notebooks](https://github.com/arvkevi/kneed/blob/master
 KneeLocator(x, y, curve='convex', direction='decreasing')
 ```
 
-![](images/knee.png)
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/knee.png)
 
 ## Contributing
 
