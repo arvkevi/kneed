@@ -61,22 +61,22 @@ class KneeLocator(object):
         # Step 3: Calculate the Difference curve
         self.x_normalized, self.y_normalized = self.transform_xy(self.x_normalized, self.y_normalized, self.direction, self.curve)
         # normalized difference curve
-        self.y_distance = self.y_normalized - self.x_normalized
-        self.x_distance = self.x_normalized.copy()
+        self.y_difference = self.y_normalized - self.x_normalized
+        self.x_difference = self.x_normalized.copy()
 
         # Step 4: Identify local maxima/minima
         # local maxima
-        self.maxima_indices = argrelextrema(self.y_distance, np.greater)[0]
-        self.x_distance_maxima = self.x_distance[self.maxima_indices]
-        self.y_distance_maxima = self.y_distance[self.maxima_indices]
+        self.maxima_indices = argrelextrema(self.y_difference, np.greater)[0]
+        self.x_difference_maxima = self.x_difference[self.maxima_indices]
+        self.y_difference_maxima = self.y_difference[self.maxima_indices]
 
         # local minima
-        self.minima_indices = argrelextrema(self.y_distance, np.less)[0]
-        self.x_distance_minima = self.x_distance[self.minima_indices]
-        self.y_distance_minima = self.y_distance[self.minima_indices]
+        self.minima_indices = argrelextrema(self.y_difference, np.less)[0]
+        self.x_difference_minima = self.x_difference[self.minima_indices]
+        self.y_difference_minima = self.y_difference[self.minima_indices]
 
         # Step 5: Calculate thresholds
-        self.Tmx = self.y_distance_maxima - (self.S * np.abs(np.diff(self.x_normalized).mean()))
+        self.Tmx = self.y_difference_maxima - (self.S * np.abs(np.diff(self.x_normalized).mean()))
 
         # Step 6: find knee
         self.find_knee()
@@ -110,39 +110,39 @@ class KneeLocator(object):
     def find_knee(self, ):
         """This function finds and sets the knee value and the normalized knee value. """
         if not self.maxima_indices.size:
-            warnings.warn("No local maxima found in the distance curve\n"
+            warnings.warn("No local maxima found in the difference curve\n"
                           "The line is probably not polynomial, try plotting\n"
-                          "the distance curve with plt.plot(knee.x_distance, knee.y_distance)\n"
+                          "the difference curve with plt.plot(knee.x_difference, knee.y_difference)\n"
                           "Also check that you aren't mistakenly setting the curve argument", RuntimeWarning)
             return None, None
 
-        # artificially place a local max at the last item in the x_distance array
-        self.maxima_indices = np.append(self.maxima_indices, len(self.x_distance) - 1)
-        self.minima_indices = np.append(self.minima_indices, len(self.x_distance) - 1)
+        # artificially place a local max at the last item in the x_difference array
+        self.maxima_indices = np.append(self.maxima_indices, len(self.x_difference) - 1)
+        self.minima_indices = np.append(self.minima_indices, len(self.x_difference) - 1)
 
         # placeholder for which threshold region i is located in.
         maxima_threshold_index = 0
         minima_threshold_index = 0
-        # traverse the distance curve
-        for idx, i in enumerate(self.x_distance):
+        # traverse the difference curve
+        for idx, i in enumerate(self.x_difference):
             # reached the end of the curve
             if i == 1.0:
                 break
-            # values in distance curve are at or after a local maximum
+            # values in difference curve are at or after a local maximum
             if idx >= self.maxima_indices[maxima_threshold_index]:
                 threshold = self.Tmx[maxima_threshold_index]
                 threshold_index = idx
                 maxima_threshold_index += 1
-            # values in distance curve are at or after a local minimum
+            # values in difference curve are at or after a local minimum
             if idx >= self.minima_indices[minima_threshold_index]:
                 threshold = 0.0
                 minima_threshold_index += 1
-            # Do not evaluate values in the distance curve before the first local maximum.
+            # Do not evaluate values in the difference curve before the first local maximum.
             if idx < self.maxima_indices[0]:
                 continue
 
             # evaluate the threshold
-            if self.y_distance[idx] < threshold:
+            if self.y_difference[idx] < threshold:
                 if self.curve == 'convex':
                     if self.direction == 'decreasing':
                         knee = self.x[threshold_index]
@@ -171,15 +171,15 @@ class KneeLocator(object):
             warnings.warn('No knee/elbow found')
 
     def plot_knee_normalized(self, ):
-        """Plot the normalized curve, the distance curve (x_distance, y_normalized) and the knee, if it exists."""
+        """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists."""
         import matplotlib.pyplot as plt
 
         plt.figure(figsize=(6, 6))
         plt.title('Normalized Knee Point')
         plt.plot(self.x_normalized, self.y_normalized, 'b', label='normalized curve')
-        plt.plot(self.x_distance, self.y_distance, 'r', label='difference curve')
+        plt.plot(self.x_difference, self.y_difference, 'r', label='difference curve')
         plt.xticks(np.arange(self.x_normalized.min(), self.x_normalized.max() + 0.1, 0.1))
-        plt.yticks(np.arange(self.y_distance.min(), self.y_normalized.max() + 0.1, 0.1))
+        plt.yticks(np.arange(self.y_difference.min(), self.y_normalized.max() + 0.1, 0.1))
 
         plt.vlines(self.norm_knee, plt.ylim()[0], plt.ylim()[1], linestyles='--', label='knee/elbow')
         plt.legend(loc='best')
