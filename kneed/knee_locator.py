@@ -118,7 +118,6 @@ class KneeLocator(object):
 
         # artificially place a local max at the last item in the x_distance array
         self.maxima_indices = np.append(self.maxima_indices, len(self.x_distance) - 1)
-        self.minima_indices = np.append(self.minima_indices, 0)
         self.minima_indices = np.append(self.minima_indices, len(self.x_distance) - 1)
 
         # placeholder for which threshold region i is located in.
