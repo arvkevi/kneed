@@ -66,9 +66,9 @@ class KneeLocator(object):
 
         # Step 4: Identify local maxima/minima
         # local maxima
-        self.maxima_inidices = argrelextrema(self.y_distance, np.greater)[0]
-        self.x_distance_maxima = self.x_distance[self.maxima_inidices]
-        self.y_distance_maxima = self.y_distance[self.maxima_inidices]
+        self.maxima_indices = argrelextrema(self.y_distance, np.greater)[0]
+        self.x_distance_maxima = self.x_distance[self.maxima_indices]
+        self.y_distance_maxima = self.y_distance[self.maxima_indices]
 
         # local minima
         self.minima_indices = argrelextrema(self.y_distance, np.less)[0]
@@ -109,7 +109,7 @@ class KneeLocator(object):
 
     def find_knee(self, ):
         """This function finds and sets the knee value and the normalized knee value. """
-        if not self.maxima_inidices.size:
+        if not self.maxima_indices.size:
             warnings.warn("No local maxima found in the distance curve\n"
                           "The line is probably not polynomial, try plotting\n"
                           "the distance curve with plt.plot(knee.x_distance, knee.y_distance)\n"
@@ -117,7 +117,8 @@ class KneeLocator(object):
             return None, None
 
         # artificially place a local max at the last item in the x_distance array
-        self.maxima_inidices = np.append(self.maxima_inidices, len(self.x_distance) - 1)
+        self.maxima_indices = np.append(self.maxima_indices, len(self.x_distance) - 1)
+        self.minima_indices = np.append(self.minima_indices, 0)
         self.minima_indices = np.append(self.minima_indices, len(self.x_distance) - 1)
 
         # placeholder for which threshold region i is located in.
@@ -129,7 +130,7 @@ class KneeLocator(object):
             if i == 1.0:
                 break
             # values in distance curve are at or after a local maximum
-            if idx >= self.maxima_inidices[maxima_threshold_index]:
+            if idx >= self.maxima_indices[maxima_threshold_index]:
                 threshold = self.Tmx[maxima_threshold_index]
                 threshold_index = idx
                 maxima_threshold_index += 1
@@ -138,7 +139,7 @@ class KneeLocator(object):
                 threshold = 0.0
                 minima_threshold_index += 1
             # Do not evaluate values in the distance curve before the first local maximum.
-            if idx < self.maxima_inidices[0]:
+            if idx < self.maxima_indices[0]:
                 continue
 
             # evaluate the threshold
