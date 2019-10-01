@@ -15,6 +15,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
     * [Visualize](#visualize)
 - [Examples](#examples)
     * [Sensitivity parameter (S)](#sensitivity-parameter-s)
+      * [Online vs Offline detection](#online-vs-offline-detection)
     * [Polynomial Fit](#polynomial-fit)
     * [Noisy Gaussian](#noisygaussian)
     * [Select k clusters](#select-k-clusters)
@@ -135,6 +136,27 @@ plt.legend();
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/S_parameter.png)
 
 Notice that any **S**>200 will result in a knee at 482 (0.48, normalized) in the plot above.
+
+### Online vs Offline Detection
+The knee point can be corrected if the parameter `online` is `True` (default). This mode will step through each element in 
+`x`. In contrast, if `online` is `False`, kneed will run in offline mode and return the first knee point identified.
+
+Using the `x` and `y` from the Sensitivity example above, this time, let's keep `S=1` but modify `online`.
+```python
+kl_online = KneeLocator(x, y, curve='convex', direction='decreasing', online=True)
+kl_offline = KneeLocator(x, y, curve='convex', direction='decreasing', online=False)
+
+import matplotlib.pyplot as plt
+plt.style.use('ggplot');
+plt.figure(figsize=(8, 6));
+plt.plot(kl_online.x_normalized, kl_online.y_normalized);
+plt.plot(kl_online.x_distance, kl_online.y_distance);
+colors = ['r', 'g']
+for k, c, o in zip([kl_online.norm_knee, kl_offline.norm_knee], ['r', 'g'], ['online', 'offline']):
+    plt.vlines(k, 0, 1, linestyles='--', colors=c, label=o);
+plt.legend();
+```
+![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/online_vs_offline.png)
 
 ### Polynomial Fit
 Here is an example of a "bumpy" or "noisy" line where the default `scipy.interpolate.interp1d` spline fitting method does not provide the best estimate for the point of maximum curvature.
