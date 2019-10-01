@@ -87,7 +87,7 @@ def test_convex_decreasing_truncated(interp_method):
 
 
 @pytest.mark.parametrize("interp_method, expected", [
-    ('interp1d', 31),
+    ('interp1d', 26),
     ('polynomial', 28)
 ])
 def test_convex_decreasing_bumpy(interp_method, expected):
@@ -97,13 +97,20 @@ def test_convex_decreasing_bumpy(interp_method, expected):
     assert kl.knee == expected
 
 
-def test_gamma():
+@pytest.mark.parametrize("online, expected", [
+    (True, 482),
+    (False, 22)
+])
+def test_gamma_online_offline(online, expected):
+    """Tests online and offline knee detection.
+    Notable that a large number of samples are highly sensitive to S parameter
+    """
     np.random.seed(23)
     n = 1000
     x = range(1, n + 1)
     y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing')
-    assert kl.knee == 43
+    kl = KneeLocator(x, y, curve='convex', direction='decreasing', online=online)
+    assert kl.knee == expected
 
 
 def test_sensitivity():
@@ -131,11 +138,11 @@ def test_sine():
         ('increasing', 'concave'),
         ('decreasing', 'concave')
     ]
-    expected_knees = [4.5, 4.9, 1.4, 7.7, 8.1, 1.8]
+    expected_knees = [4.5, 4.9, 7.7, 1.8]
     detected_knees = []
     for direction, curve in sine_combos:
-        kl_sine = KneeLocator(x, y_sin, direction=direction, curve=curve, S=1)
-        detected_knees.extend(kl_sine.all_knees)
+        kl_sine = KneeLocator(x, y_sin, direction=direction, curve=curve, S=1, online=True)
+        detected_knees.append(kl_sine.knee)
     assert np.isclose(expected_knees, detected_knees).all()
 
 
