@@ -15,7 +15,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
     * [Visualize](#visualize)
 - [Examples](#examples)
     * [Sensitivity parameter (S)](#sensitivity-parameter-s)
-      * [Online vs Offline detection](#online-vs-offline-detection)
+    * [Online vs Offline detection](#online-vs-offline-detection)
     * [Polynomial Fit](#polynomial-fit)
     * [Noisy Gaussian](#noisygaussian)
     * [Select k clusters](#select-k-clusters)
