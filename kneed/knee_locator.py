@@ -7,9 +7,16 @@ import warnings
 
 
 class KneeLocator(object):
-
-    def __init__(self, x, y, S=1.0, curve='concave', direction='increasing', interp_method='interp1d',
-                 online=False):
+    def __init__(
+        self,
+        x,
+        y,
+        S=1.0,
+        curve="concave",
+        direction="increasing",
+        interp_method="interp1d",
+        online=False,
+    ):
         """
         Once instantiated, this class attempts to find the point of maximum
         curvature on a line. The knee is accessible via the `.knee` attribute.
@@ -50,11 +57,13 @@ class KneeLocator(object):
             regr_model = LinearRegression()
             regr_model.fit(xpn, self.y)
             self.Ds_y = regr_model.predict(
-                pn_model.fit_transform(self.x.reshape(-1, 1)))
+                pn_model.fit_transform(self.x.reshape(-1, 1))
+            )
         else:
             warnings.warn(
                 "{} is an invalid interp_method parameter, use either 'interp1d' or 'polynomial'".format(
-                    interp_method)
+                    interp_method
+                )
             )
             return
 
@@ -63,7 +72,9 @@ class KneeLocator(object):
         self.y_normalized = self.__normalize(self.Ds_y)
 
         # Step 3: Calculate the Difference curve
-        self.x_normalized, self.y_normalized = self.transform_xy(self.x_normalized, self.y_normalized, self.direction, self.curve)
+        self.x_normalized, self.y_normalized = self.transform_xy(
+            self.x_normalized, self.y_normalized, self.direction, self.curve
+        )
         # normalized difference curve
         self.y_difference = self.y_normalized - self.x_normalized
         self.x_difference = self.x_normalized.copy()
@@ -80,7 +91,9 @@ class KneeLocator(object):
         self.y_difference_minima = self.y_difference[self.minima_indices]
 
         # Step 5: Calculate thresholds
-        self.Tmx = self.y_difference_maxima - (self.S * np.abs(np.diff(self.x_normalized).mean()))
+        self.Tmx = self.y_difference_maxima - (
+            self.S * np.abs(np.diff(self.x_normalized).mean())
+        )
 
         # Step 6: find knee
         self.knee, self.norm_knee = self.find_knee()
@@ -97,26 +110,29 @@ class KneeLocator(object):
     def transform_xy(x, y, direction, curve):
         """transform x and y to concave, increasing based on given direction and curve"""
         # convert elbows to knees
-        if curve == 'convex':
+        if curve == "convex":
             x = x.max() - x
             y = y.max() - y
         # flip decreasing functions to increasing
-        if direction == 'decreasing':
+        if direction == "decreasing":
             y = np.flip(y, axis=0)
 
-        if curve == 'convex':
+        if curve == "convex":
             x = np.flip(x, axis=0)
             y = np.flip(y, axis=0)
 
         return x, y
 
-    def find_knee(self, ):
+    def find_knee(self,):
         """This function finds and sets the knee value and the normalized knee value. """
         if not self.maxima_indices.size:
-            warnings.warn("No local maxima found in the difference curve\n"
-                          "The line is probably not polynomial, try plotting\n"
-                          "the difference curve with plt.plot(knee.x_difference, knee.y_difference)\n"
-                          "Also check that you aren't mistakenly setting the curve argument", RuntimeWarning)
+            warnings.warn(
+                "No local maxima found in the difference curve\n"
+                "The line is probably not polynomial, try plotting\n"
+                "the difference curve with plt.plot(knee.x_difference, knee.y_difference)\n"
+                "Also check that you aren't mistakenly setting the curve argument",
+                RuntimeWarning,
+            )
             return None, None
 
         # placeholder for which threshold region i is located in.
@@ -145,16 +161,16 @@ class KneeLocator(object):
                 minima_threshold_index += 1
 
             if self.y_difference[j] < threshold:
-                if self.curve == 'convex':
-                    if self.direction == 'decreasing':
+                if self.curve == "convex":
+                    if self.direction == "decreasing":
                         knee = self.x[threshold_index]
                         norm_knee = self.x_normalized[threshold_index]
                     else:
                         knee = self.x[-(threshold_index + 1)]
                         norm_knee = self.x_normalized[-(threshold_index + 1)]
 
-                elif self.curve == 'concave':
-                    if self.direction == 'decreasing':
+                elif self.curve == "concave":
+                    if self.direction == "decreasing":
                         knee = self.x[-(threshold_index + 1)]
                         norm_knee = self.x_normalized[-(threshold_index + 1)]
                     else:
@@ -169,33 +185,46 @@ class KneeLocator(object):
                     return knee, norm_knee
 
         if self.all_knees == set():
-            warnings.warn('No knee/elbow found')
+            warnings.warn("No knee/elbow found")
             return None, None
 
         return knee, norm_knee
 
-    def plot_knee_normalized(self, ):
+    def plot_knee_normalized(self,):
         """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists."""
         import matplotlib.pyplot as plt
 
         plt.figure(figsize=(6, 6))
-        plt.title('Normalized Knee Point')
-        plt.plot(self.x_normalized, self.y_normalized, 'b', label='normalized curve')
-        plt.plot(self.x_difference, self.y_difference, 'r', label='difference curve')
-        plt.xticks(np.arange(self.x_normalized.min(), self.x_normalized.max() + 0.1, 0.1))
-        plt.yticks(np.arange(self.y_difference.min(), self.y_normalized.max() + 0.1, 0.1))
+        plt.title("Normalized Knee Point")
+        plt.plot(self.x_normalized, self.y_normalized, "b", label="normalized curve")
+        plt.plot(self.x_difference, self.y_difference, "r", label="difference curve")
+        plt.xticks(
+            np.arange(self.x_normalized.min(), self.x_normalized.max() + 0.1, 0.1)
+        )
+        plt.yticks(
+            np.arange(self.y_difference.min(), self.y_normalized.max() + 0.1, 0.1)
+        )
 
-        plt.vlines(self.norm_knee, plt.ylim()[0], plt.ylim()[1], linestyles='--', label='knee/elbow')
-        plt.legend(loc='best')
+        plt.vlines(
+            self.norm_knee,
+            plt.ylim()[0],
+            plt.ylim()[1],
+            linestyles="--",
+            label="knee/elbow",
+        )
+        plt.legend(loc="best")
 
-    def plot_knee(self, ):
+    def plot_knee(self,):
         """Plot the curve and the knee, if it exists"""
         import matplotlib.pyplot as plt
+
         plt.figure(figsize=(6, 6))
-        plt.title('Knee Point')
-        plt.plot(self.x, self.y, 'b', label='data')
-        plt.vlines(self.knee, plt.ylim()[0], plt.ylim()[1], linestyles='--', label='knee/elbow')
-        plt.legend(loc='best')
+        plt.title("Knee Point")
+        plt.plot(self.x, self.y, "b", label="data")
+        plt.vlines(
+            self.knee, plt.ylim()[0], plt.ylim()[1], linestyles="--", label="knee/elbow"
+        )
+        plt.legend(loc="best")
 
     # Niceties for users working with elbows rather than knees
     @property
