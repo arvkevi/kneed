@@ -151,3 +151,19 @@ def test_list_input():
     x, y = dg.figure2()
     kl = KneeLocator(x.tolist(), y.tolist(), S=1.0, curve='concave', interp_method='polynomial')
     assert math.isclose(kl.knee, 0.22, rel_tol=0.05)
+
+
+def test_flat_maxima():
+    """The global maxima has a sequentially equal value in the difference curve"""
+    x = [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0]
+    y = [1, 0.787701317715959, 0.7437774524158126, 0.6559297218155198, 0.5065885797950219, 0.36749633967789164,
+         0.2547584187408492, 0.16251830161054173, 0.10395314787701318, 0.06734992679355783, 0.043923865300146414,
+         0.027818448023426062, 0.01903367496339678, 0.013177159590043924, 0.010248901903367497, 0.007320644216691069,
+         0.005856515373352855, 0.004392386530014641]
+    # When S=0.0 the first local maximum is found.
+    kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=0.0)
+    assert math.isclose(kl.knee, 1.0, rel_tol=0.05)
+
+    # When S=1.0 the global maximum is found.
+    kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=1.0)
+    assert math.isclose(kl.knee, 8.0, rel_tol=0.05)

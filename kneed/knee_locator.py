@@ -81,12 +81,12 @@ class KneeLocator(object):
 
         # Step 4: Identify local maxima/minima
         # local maxima
-        self.maxima_indices = argrelextrema(self.y_difference, np.greater)[0]
+        self.maxima_indices = argrelextrema(self.y_difference, np.greater_equal)[0]
         self.x_difference_maxima = self.x_difference[self.maxima_indices]
         self.y_difference_maxima = self.y_difference[self.maxima_indices]
 
         # local minima
-        self.minima_indices = argrelextrema(self.y_difference, np.less)[0]
+        self.minima_indices = argrelextrema(self.y_difference, np.less_equal)[0]
         self.x_difference_minima = self.x_difference[self.minima_indices]
         self.y_difference_minima = self.y_difference[self.minima_indices]
 
