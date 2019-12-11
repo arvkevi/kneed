@@ -197,12 +197,12 @@ This simulate 5,000 `NoisyGaussian` instances and finds the average.
 knees = []
 for i in range(5):
     x, y = DataGenerator.noisy_gaussian(mu=50, sigma=10, N=1000)
-    kneedle = KneeLocator(x, y, curve='concave', direction='increasing', interp_method='polynomial')
+    kneedle = KneeLocator(x, y, curve='concave', direction='increasing', interp_method='polynomial', online=True)
     knees.append(kneedle.knee)
 
 # average knee point
 round(sum(knees) / len(knees), 3)
-60.921
+63.583
 ```
 
 ### Select k clusters
