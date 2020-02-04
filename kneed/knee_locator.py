@@ -4,6 +4,7 @@ from scipy.signal import argrelextrema
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 import warnings
+from typing import Tuple, Optional
 
 
 class KneeLocator(object):
@@ -190,11 +191,14 @@ class KneeLocator(object):
 
         return knee, norm_knee
 
-    def plot_knee_normalized(self,):
+    def plot_knee_normalized(self, figsize: Optional[Tuple[int, int]] = None):
         """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists."""
         import matplotlib.pyplot as plt
 
-        plt.figure(figsize=(6, 6))
+        if figsize is None:
+            figsize = (6, 6)
+
+        plt.figure(figsize=figsize)
         plt.title("Normalized Knee Point")
         plt.plot(self.x_normalized, self.y_normalized, "b", label="normalized curve")
         plt.plot(self.x_difference, self.y_difference, "r", label="difference curve")
@@ -214,11 +218,20 @@ class KneeLocator(object):
         )
         plt.legend(loc="best")
 
-    def plot_knee(self,):
-        """Plot the curve and the knee, if it exists"""
+    def plot_knee(self, figsize: Optional[Tuple[int, int]] = None):
+        """
+        Plot the curve and the knee, if it exists
+
+        :param figsize: Optional[Tuple[int, int]
+            The figure size of the plot. Example (12, 8)
+        :return: NoReturn
+        """
         import matplotlib.pyplot as plt
 
-        plt.figure(figsize=(6, 6))
+        if figsize is None:
+            figsize = (6, 6)
+
+        plt.figure(figsize=figsize)
         plt.title("Knee Point")
         plt.plot(self.x, self.y, "b", label="data")
         plt.vlines(
