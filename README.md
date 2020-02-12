@@ -73,6 +73,13 @@ print(round(kneedle.elbow, 3))
 0.222
 ```
 
+The knee point returned is a value along the `x` axis. The `y` value at the knee can be identified:
+
+```python
+print(round(kneedle.knee_y, 3))
+1.897
+```
+
 ### Visualize
 The `KneeLocator` class also has two plotting functions for quick visualizations.
 **Note that all (x, y) are transformed for the normalized plots**
@@ -133,6 +140,7 @@ for k, c, s in zip(norm_knees, colors, sensitivity):
     plt.vlines(k, 0, 1, linestyles='--', colors=c, label=f'S = {s}');
 plt.legend();
 ```
+
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/S_parameter.png)
 
 Notice that any **S**>200 will result in a knee at 482 (0.48, normalized) in the plot above.

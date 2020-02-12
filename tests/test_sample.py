@@ -167,3 +167,13 @@ def test_flat_maxima():
     # When S=1.0 the global maximum is found.
     kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=1.0)
     assert math.isclose(kl.knee, 8.0, rel_tol=0.05)
+
+
+def test_y():
+    """Test the y value"""
+    x, y = dg.figure2()
+    kl = KneeLocator(x, y, S=1.0, curve="concave", interp_method="interp1d")
+    assert math.isclose(kl.knee_y, 1.897, rel_tol=0.03)
+    assert math.isclose(kl.all_knees_y[0], 1.897, rel_tol=0.03)
+    assert math.isclose(kl.norm_knee_y, 0.758, rel_tol=0.03)
+    assert math.isclose(kl.all_norm_knees_y[0], 0.758, rel_tol=0.03)
