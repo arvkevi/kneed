@@ -100,7 +100,9 @@ class KneeLocator(object):
         return (a - min(a)) / (max(a) - min(a))
 
     @staticmethod
-    def transform_xy(x: Iterable[float], y: Iterable[float], direction: str, curve: str) -> Tuple[Iterable[float], Iterable[float]]:
+    def transform_xy(
+        x: Iterable[float], y: Iterable[float], direction: str, curve: str
+    ) -> Tuple[Iterable[float], Iterable[float]]:
         """transform x and y to concave, increasing based on given direction and curve"""
         # convert elbows to knees
         if curve == "convex":

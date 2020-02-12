@@ -2,6 +2,7 @@ import numpy as np
 
 from typing import Iterable, Tuple
 
+
 class DataGenerator(object):
     """Generate data to work with kneedle."""
 
@@ -9,7 +10,9 @@ class DataGenerator(object):
         pass
 
     @staticmethod
-    def noisy_gaussian(mu: float = 50, sigma: float = 10, N: int = 100) -> Tuple[Iterable[float], Iterable[float]]:
+    def noisy_gaussian(
+        mu: float = 50, sigma: float = 10, N: int = 100
+    ) -> Tuple[Iterable[float], Iterable[float]]:
         """Recreate NoisyGaussian from the orignial kneedle paper.
         :param mu: The mean value to build a normal distribution around
         :param sigma: The standard deviation of the distribution.
