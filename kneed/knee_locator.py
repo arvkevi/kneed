@@ -4,38 +4,31 @@ from scipy.signal import argrelextrema
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 import warnings
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Iterable
 
 
 class KneeLocator(object):
     def __init__(
         self,
-        x,
-        y,
-        S=1.0,
-        curve="concave",
-        direction="increasing",
-        interp_method="interp1d",
-        online=False,
+        x: Iterable[float],
+        y: Iterable[float],
+        S: float = 1.0,
+        curve: str = "concave",
+        direction: str = "increasing",
+        interp_method: str = "interp1d",
+        online: bool = False,
     ):
         """
         Once instantiated, this class attempts to find the point of maximum
         curvature on a line. The knee is accessible via the `.knee` attribute.
         :param x: x values.
-        :type x: list or array.
         :param y: y values.
-        :type y: list or array.
         :param S: Sensitivity, original paper suggests default of 1.0
-        :type S: float
         :param curve: If 'concave', algorithm will detect knees. If 'convex', it
             will detect elbows.
-        :type curve: string
         :param direction: one of {"increasing", "decreasing"}
-        :type direction: string
         :param interp_method: one of {"interp1d", "polynomial"}
-        :type interp_method: string
         :param online: Will correct old knee points if True, will return first knee if False
-        :type online: bool
         """
         # Step 0: Raw Input
         self.x = np.array(x)
@@ -100,15 +93,16 @@ class KneeLocator(object):
         self.knee, self.norm_knee = self.find_knee()
 
     @staticmethod
-    def __normalize(a):
+    def __normalize(a: Iterable[float]) -> Iterable[float]:
         """normalize an array
         :param a: The array to normalize
-        :type a: array
         """
         return (a - min(a)) / (max(a) - min(a))
 
     @staticmethod
-    def transform_xy(x, y, direction, curve):
+    def transform_xy(
+        x: Iterable[float], y: Iterable[float], direction: str, curve: str
+    ) -> Tuple[Iterable[float], Iterable[float]]:
         """transform x and y to concave, increasing based on given direction and curve"""
         # convert elbows to knees
         if curve == "convex":
@@ -192,7 +186,12 @@ class KneeLocator(object):
         return knee, norm_knee
 
     def plot_knee_normalized(self, figsize: Optional[Tuple[int, int]] = None):
-        """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists."""
+        """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists.
+
+        :param figsize: Optional[Tuple[int, int]
+        The figure size of the plot. Example (12, 8)
+        :return: NoReturn
+        """
         import matplotlib.pyplot as plt
 
         if figsize is None:
