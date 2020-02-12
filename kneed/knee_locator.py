@@ -39,6 +39,8 @@ class KneeLocator(object):
         self.S = S
         self.all_knees = set()
         self.all_norm_knees = set()
+        self.all_knees_y = []
+        self.all_norm_knees_y = []
         self.online = online
 
         # Step 1: fit a smooth line
@@ -91,6 +93,8 @@ class KneeLocator(object):
 
         # Step 6: find knee
         self.knee, self.norm_knee = self.find_knee()
+        self.knee_y = self.y[self.x == self.knee][0]
+        self.norm_knee_y = self.y_normalized[self.x_normalized == self.norm_knee][0]
 
     @staticmethod
     def __normalize(a: Iterable[float]) -> Iterable[float]:
@@ -175,6 +179,11 @@ class KneeLocator(object):
                 self.all_knees.add(knee)
                 self.all_norm_knees.add(norm_knee)
 
+                self.all_knees_y.append(self.y[self.x == knee][0])
+                self.all_norm_knees_y.append(
+                    self.y_normalized[self.x_normalized == norm_knee][0]
+                )
+
                 # if detecting in offline mode, return the first knee found
                 if self.online is False:
                     return knee, norm_knee
@@ -248,9 +257,25 @@ class KneeLocator(object):
         return self.norm_knee
 
     @property
+    def elbow_y(self):
+        return self.knee_y
+
+    @property
+    def norm_elbow_y(self):
+        return self.norm_knee_y
+
+    @property
     def all_elbows(self):
         return self.all_knees
 
     @property
     def all_norm_elbows(self):
         return self.all_norm_knees
+
+    @property
+    def all_elbows_y(self):
+        return self.all_knees_y
+
+    @property
+    def all_norm_elbows_y(self):
+        return self.all_norm_knees_y
