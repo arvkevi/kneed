@@ -93,8 +93,12 @@ class KneeLocator(object):
 
         # Step 6: find knee
         self.knee, self.norm_knee = self.find_knee()
-        self.knee_y = self.y[self.x == self.knee][0]
-        self.norm_knee_y = self.y_normalized[self.x_normalized == self.norm_knee][0]
+
+        # Step 7: If we have a knee, extract data about it
+        self.knee_y = self.norm_knee_y = None
+        if self.knee:
+            self.knee_y = self.y[self.x == self.knee][0]
+            self.norm_knee_y = self.y_normalized[self.x_normalized == self.norm_knee][0]
 
     @staticmethod
     def __normalize(a: Iterable[float]) -> Iterable[float]:
