@@ -177,3 +177,17 @@ def test_y():
     assert math.isclose(kl.all_knees_y[0], 1.897, rel_tol=0.03)
     assert math.isclose(kl.norm_knee_y, 0.758, rel_tol=0.03)
     assert math.isclose(kl.all_norm_knees_y[0], 0.758, rel_tol=0.03)
+
+def test_y_no_knee():
+    """Test the y value, if there is no knee found."""
+    kl = KneeLocator(
+        np.array([1, 2, 3]),
+        np.array([0.90483742, 0.81873075, 0.74081822]),
+        S=1.0,
+        curve="convex",
+        direction="decreasing",
+        interp_method="interp1d",
+        online=False
+    )
+    assert kl.knee_y is None
+    assert kl.norm_knee_y is None
