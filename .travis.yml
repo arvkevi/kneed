@@ -7,8 +7,12 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install -e .
+  - pip install codecov
 script:
   - pytest
+  - coverage run -m unittest discover
+after_success:
+  - codecov
 branches:
   only:
     - master
