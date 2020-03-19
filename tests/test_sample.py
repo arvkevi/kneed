@@ -12,6 +12,8 @@ def test_figure2(interp_method):
     x, y = dg.figure2()
     kl = KneeLocator(x, y, S=1.0, curve='concave', interp_method=interp_method)
     assert math.isclose(kl.knee, 0.22, rel_tol=0.05)
+    assert math.isclose(kl.elbow, 0.22, rel_tol=0.05)
+    assert math.isclose(kl.norm_elbow, kl.knee, rel_tol=0.05)
 
 
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
@@ -25,7 +27,7 @@ def test_NoisyGaussian(interp_method):
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_concave_increasing(interp_method):
     """test a concave increasing function"""
-    x, y = dg.concave_increasing()
+    x, y = dg().concave_increasing()
     kn = KneeLocator(x, y, curve='concave', interp_method=interp_method)
     assert kn.knee == 2
 
@@ -169,6 +171,18 @@ def test_flat_maxima():
     assert math.isclose(kl.knee, 8.0, rel_tol=0.05)
 
 
+def test_all_knees():
+    x, y = dg.bumpy()
+    kl = KneeLocator(x, y, curve='convex', direction='decreasing', online=True)
+    kl.all_elbows == set([41, 46, 53, 26, 31])
+    kl.all_norm_elbows == set([0.2921348314606742,
+                               0.348314606741573,
+                               0.5955056179775281,
+                               0.4606741573033708,
+                               0.5168539325842696]
+                              )
+
+
 def test_y():
     """Test the y value"""
     x, y = dg.figure2()
@@ -177,6 +191,12 @@ def test_y():
     assert math.isclose(kl.all_knees_y[0], 1.897, rel_tol=0.03)
     assert math.isclose(kl.norm_knee_y, 0.758, rel_tol=0.03)
     assert math.isclose(kl.all_norm_knees_y[0], 0.758, rel_tol=0.03)
+
+    assert math.isclose(kl.elbow_y, 1.897, rel_tol=0.03)
+    assert math.isclose(kl.all_elbows_y[0], 1.897, rel_tol=0.03)
+    assert math.isclose(kl.norm_elbow_y, 0.758, rel_tol=0.03)
+    assert math.isclose(kl.all_norm_elbows_y[0], 0.758, rel_tol=0.03)
+
 
 def test_y_no_knee():
     """Test the y value, if there is no knee found."""
