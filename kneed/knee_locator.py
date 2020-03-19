@@ -191,7 +191,6 @@ class KneeLocator(object):
                 self.all_knees.add(knee)
                 self.all_norm_knees.add(norm_knee)
 
-
                 # if detecting in offline mode, return the first knee found
                 if self.online is False:
                     return knee, norm_knee

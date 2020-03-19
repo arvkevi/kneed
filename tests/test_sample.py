@@ -5,7 +5,6 @@ from kneed.data_generator import DataGenerator as dg
 from kneed.knee_locator import KneeLocator
 
 
-
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
 def test_figure2(interp_method):
     """From the kneedle manuscript"""
@@ -36,7 +35,9 @@ def test_concave_increasing(interp_method):
 def test_concave_decreasing(interp_method):
     """test a concave decreasing function"""
     x, y = dg.concave_decreasing()
-    kn = KneeLocator(x, y, curve='concave', direction='decreasing', interp_method=interp_method)
+    kn = KneeLocator(
+        x, y, curve='concave', direction='decreasing', interp_method=interp_method
+    )
     assert kn.knee == 7
 
 
@@ -52,7 +53,9 @@ def test_convex_increasing(interp_method):
 def test_convex_decreasing(interp_method):
     """test a convex decreasing function"""
     x, y = dg.convex_decreasing()
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing', interp_method=interp_method)
+    kl = KneeLocator(
+        x, y, curve='convex', direction='decreasing', interp_method=interp_method
+    )
     assert kl.knee == 2
 
 
@@ -60,7 +63,9 @@ def test_convex_decreasing(interp_method):
 def test_concave_increasing_truncated(interp_method):
     """test a truncated concave increasing function"""
     x, y = dg.concave_increasing()
-    kl = KneeLocator(x[:-3] / 10, y[:-3] / 10, curve='concave', interp_method=interp_method)
+    kl = KneeLocator(
+        x[:-3] / 10, y[:-3] / 10, curve='concave', interp_method=interp_method
+    )
     assert kl.knee == 0.2
 
 
@@ -68,7 +73,13 @@ def test_concave_increasing_truncated(interp_method):
 def test_concave_decreasing_truncated(interp_method):
     """test a truncated concave decreasing function"""
     x, y = dg.concave_decreasing()
-    kl = KneeLocator(x[:-3] / 10, y[:-3] / 10, curve='concave', direction='decreasing', interp_method=interp_method)
+    kl = KneeLocator(
+        x[:-3] / 10,
+        y[:-3] / 10,
+        curve='concave',
+        direction='decreasing',
+        interp_method=interp_method,
+    )
     assert kl.knee == 0.4
 
 
@@ -76,7 +87,9 @@ def test_concave_decreasing_truncated(interp_method):
 def test_convex_increasing_truncated(interp_method):
     """test a truncated convex increasing function"""
     x, y = dg.convex_increasing()
-    kl = KneeLocator(x[:-3] / 10, y[:-3] / 10, curve='convex', interp_method=interp_method)
+    kl = KneeLocator(
+        x[:-3] / 10, y[:-3] / 10, curve='convex', interp_method=interp_method
+    )
     assert kl.knee == 0.4
 
 
@@ -84,25 +97,29 @@ def test_convex_increasing_truncated(interp_method):
 def test_convex_decreasing_truncated(interp_method):
     """test a truncated convex decreasing function"""
     x, y = dg.convex_decreasing()
-    kl = KneeLocator(x[:-3] / 10, y[:-3] / 10, curve='convex', direction='decreasing', interp_method=interp_method)
+    kl = KneeLocator(
+        x[:-3] / 10,
+        y[:-3] / 10,
+        curve='convex',
+        direction='decreasing',
+        interp_method=interp_method,
+    )
     assert kl.knee == 0.2
 
 
-@pytest.mark.parametrize("interp_method, expected", [
-    ('interp1d', 26),
-    ('polynomial', 28)
-])
+@pytest.mark.parametrize(
+    "interp_method, expected", [('interp1d', 26), ('polynomial', 28)]
+)
 def test_convex_decreasing_bumpy(interp_method, expected):
     """test a bumpy convex decreasing function"""
     x, y = dg.bumpy()
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing', interp_method=interp_method)
+    kl = KneeLocator(
+        x, y, curve='convex', direction='decreasing', interp_method=interp_method
+    )
     assert kl.knee == expected
 
 
-@pytest.mark.parametrize("online, expected", [
-    (True, 482),
-    (False, 22)
-])
+@pytest.mark.parametrize("online, expected", [(True, 482), (False, 22)])
 def test_gamma_online_offline(online, expected):
     """Tests online and offline knee detection.
     Notable that a large number of samples are highly sensitive to S parameter
@@ -134,16 +151,18 @@ def test_sine():
     x = np.arange(0, 10, 0.1)
     y_sin = np.sin(x)
 
-    sine_combos =  [
+    sine_combos = [
         ('decreasing', 'convex'),
         ('increasing', 'convex'),
         ('increasing', 'concave'),
-        ('decreasing', 'concave')
+        ('decreasing', 'concave'),
     ]
     expected_knees = [4.5, 4.9, 7.7, 1.8]
     detected_knees = []
     for direction, curve in sine_combos:
-        kl_sine = KneeLocator(x, y_sin, direction=direction, curve=curve, S=1, online=True)
+        kl_sine = KneeLocator(
+            x, y_sin, direction=direction, curve=curve, S=1, online=True
+        )
         detected_knees.append(kl_sine.knee)
     assert np.isclose(expected_knees, detected_knees).all()
 
@@ -151,17 +170,54 @@ def test_sine():
 def test_list_input():
     """Indirectly test that flip works on lists as input"""
     x, y = dg.figure2()
-    kl = KneeLocator(x.tolist(), y.tolist(), S=1.0, curve='concave', interp_method='polynomial')
+    kl = KneeLocator(
+        x.tolist(), y.tolist(), S=1.0, curve='concave', interp_method='polynomial'
+    )
     assert math.isclose(kl.knee, 0.22, rel_tol=0.05)
 
 
 def test_flat_maxima():
     """The global maxima has a sequentially equal value in the difference curve"""
-    x = [0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0]
-    y = [1, 0.787701317715959, 0.7437774524158126, 0.6559297218155198, 0.5065885797950219, 0.36749633967789164,
-         0.2547584187408492, 0.16251830161054173, 0.10395314787701318, 0.06734992679355783, 0.043923865300146414,
-         0.027818448023426062, 0.01903367496339678, 0.013177159590043924, 0.010248901903367497, 0.007320644216691069,
-         0.005856515373352855, 0.004392386530014641]
+    x = [
+        0,
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0,
+        9.0,
+        10.0,
+        11.0,
+        12.0,
+        13.0,
+        14.0,
+        15.0,
+        16.0,
+        17.0,
+    ]
+    y = [
+        1,
+        0.787701317715959,
+        0.7437774524158126,
+        0.6559297218155198,
+        0.5065885797950219,
+        0.36749633967789164,
+        0.2547584187408492,
+        0.16251830161054173,
+        0.10395314787701318,
+        0.06734992679355783,
+        0.043923865300146414,
+        0.027818448023426062,
+        0.01903367496339678,
+        0.013177159590043924,
+        0.010248901903367497,
+        0.007320644216691069,
+        0.005856515373352855,
+        0.004392386530014641,
+    ]
     # When S=0.0 the first local maximum is found.
     kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=0.0)
     assert math.isclose(kl.knee, 1.0, rel_tol=0.05)
@@ -175,12 +231,15 @@ def test_all_knees():
     x, y = dg.bumpy()
     kl = KneeLocator(x, y, curve='convex', direction='decreasing', online=True)
     kl.all_elbows == set([41, 46, 53, 26, 31])
-    kl.all_norm_elbows == set([0.2921348314606742,
-                               0.348314606741573,
-                               0.5955056179775281,
-                               0.4606741573033708,
-                               0.5168539325842696]
-                              )
+    kl.all_norm_elbows == set(
+        [
+            0.2921348314606742,
+            0.348314606741573,
+            0.5955056179775281,
+            0.4606741573033708,
+            0.5168539325842696,
+        ]
+    )
 
 
 def test_y():
@@ -207,7 +266,7 @@ def test_y_no_knee():
         curve="convex",
         direction="decreasing",
         interp_method="interp1d",
-        online=False
+        online=False,
     )
     assert kl.knee_y is None
     assert kl.norm_knee_y is None
