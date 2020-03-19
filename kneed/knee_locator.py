@@ -180,13 +180,17 @@ class KneeLocator(object):
                         knee = self.x[threshold_index]
                         norm_knee = self.x_normalized[threshold_index]
 
+                # add the y value at the knee
+                y_at_knee = self.y[self.x == knee][0]
+                y_norm_at_knee = self.y_normalized[self.x_normalized == norm_knee][0]
+                if knee not in self.all_knees:
+                    self.all_knees_y.append(y_at_knee)
+                    self.all_norm_knees_y.append(y_norm_at_knee)
+
+                # now add the knee
                 self.all_knees.add(knee)
                 self.all_norm_knees.add(norm_knee)
 
-                self.all_knees_y.append(self.y[self.x == knee][0])
-                self.all_norm_knees_y.append(
-                    self.y_normalized[self.x_normalized == norm_knee][0]
-                )
 
                 # if detecting in offline mode, return the first knee found
                 if self.online is False:
