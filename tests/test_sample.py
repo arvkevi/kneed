@@ -1,4 +1,5 @@
 import math
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from kneed.data_generator import DataGenerator as dg
@@ -270,3 +271,38 @@ def test_y_no_knee():
     )
     assert kl.knee_y is None
     assert kl.norm_knee_y is None
+
+
+def test_interp_method():
+    """Test that the interp_method argument is valid."""
+    x, y = dg.figure2()
+    with pytest.raises(ValueError):
+        kl = KneeLocator(x, y, interp_method='not_a_method')
+
+
+def test_x_equals_y():
+    """Test that a runtime warning is raised when no maxima are found"""
+    x = range(10)
+    y = [1] * len(x)
+    with pytest.warns(RuntimeWarning):
+        kl = KneeLocator(x, y)
+
+
+def test_plot_knee_normalized():
+    """Test that plotting is functional"""
+    x, y = dg.figure2()
+    kl = KneeLocator(x, y, S=1.0, curve="concave", interp_method="interp1d")
+    num_figures_before = plt.gcf().number
+    kl.plot_knee_normalized()
+    num_figures_after = plt.gcf().number
+    assert num_figures_before < num_figures_after
+
+
+def test_plot_knee():
+    """Test that plotting is functional"""
+    x, y = dg.figure2()
+    kl = KneeLocator(x, y, S=1.0, curve="concave", interp_method="interp1d")
+    num_figures_before = plt.gcf().number
+    kl.plot_knee()
+    num_figures_after = plt.gcf().number
+    assert num_figures_before < num_figures_after

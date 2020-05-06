@@ -6,9 +6,6 @@ from typing import Iterable, Tuple
 class DataGenerator(object):
     """Generate data to work with kneedle."""
 
-    def __init(self,):
-        pass
-
     @staticmethod
     def noisy_gaussian(
         mu: float = 50, sigma: float = 10, N: int = 100
@@ -32,15 +29,6 @@ class DataGenerator(object):
         with np.errstate(divide="ignore"):
             x = np.linspace(0.0, 1, 10)
             return x, np.true_divide(-1, x + 0.1) + 5
-
-    @staticmethod
-    def decreasing() -> Tuple[Iterable[float], Iterable[float]]:
-        """Test function for decreasing data.
-        :returns: tuple(x, y)
-        """
-        x = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]
-        y = [2314, 802, 519, 417, 358, 318, 302, 284, 280]
-        return x, y
 
     @staticmethod
     def convex_increasing() -> Tuple[Iterable[float], Iterable[float]]:
