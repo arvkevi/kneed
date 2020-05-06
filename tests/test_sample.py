@@ -270,3 +270,13 @@ def test_y_no_knee():
     )
     assert kl.knee_y is None
     assert kl.norm_knee_y is None
+
+
+def test_interp_method():
+    """Test that the interp_method argument is valid."""
+    x, y = dg.figure2()
+    with pytest.raises(ValueError):
+        kl = KneeLocator(x, y, interp_method='not_a_method')
+
+
+
