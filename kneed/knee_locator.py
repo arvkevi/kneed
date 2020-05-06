@@ -56,12 +56,9 @@ class KneeLocator(object):
                 pn_model.fit_transform(self.x.reshape(-1, 1))
             )
         else:
-            warnings.warn(
-                "{} is an invalid interp_method parameter, use either 'interp1d' or 'polynomial'".format(
+            raise ValueError("{} is an invalid interp_method parameter, use either 'interp1d' or 'polynomial'".format(
                     interp_method
-                )
-            )
-            return
+                ))
 
         # Step 2: normalize values
         self.x_normalized = self.__normalize(self.x)
