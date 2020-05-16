@@ -134,7 +134,7 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot');
 plt.figure(figsize=(8, 6));
 plt.plot(kl.x_normalized, kl.y_normalized);
-plt.plot(kl.x_distance, kl.y_distance);
+plt.plot(kl.x_difference, kl.y_difference);
 colors = ['r', 'g', 'k', 'm', 'c', 'orange']
 for k, c, s in zip(norm_knees, colors, sensitivity):
     plt.vlines(k, 0, 1, linestyles='--', colors=c, label=f'S = {s}');
@@ -158,7 +158,7 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot');
 plt.figure(figsize=(8, 6));
 plt.plot(kl_online.x_normalized, kl_online.y_normalized);
-plt.plot(kl_online.x_distance, kl_online.y_distance);
+plt.plot(kl_online.x_differencece, kl_online.y_difference);
 colors = ['r', 'g']
 for k, c, o in zip([kl_online.norm_knee, kl_offline.norm_knee], ['r', 'g'], ['online', 'offline']):
     plt.vlines(k, 0, 1, linestyles='--', colors=c, label=o);
