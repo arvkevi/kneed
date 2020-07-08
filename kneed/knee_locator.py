@@ -6,6 +6,9 @@ from sklearn.linear_model import LinearRegression
 import warnings
 from typing import Tuple, Optional, Iterable
 
+VALID_CURVE = ["convex", "concave"]
+VALID_DIRECTION = ["increasing", "decreasing"]
+
 
 class KneeLocator(object):
     def __init__(
@@ -42,6 +45,19 @@ class KneeLocator(object):
         self.all_knees_y = []
         self.all_norm_knees_y = []
         self.online = online
+
+        # I'm implementing Look Before You Leap (LBYL) validation for direction
+        # and curve arguments. This is not preferred in Python. The motivation
+        # is that the logic inside the conditional once y_difference[j] is less
+        # than threshold in find_knee() could have been evaluated improperly if
+        # they weren't one of convex, concave, increasing, or decreasing,
+        # respectively.
+        valid_curve = self.curve in VALID_CURVE
+        valid_direction = self.direction in VALID_DIRECTION
+        if not all((valid_curve, valid_direction)):
+            raise ValueError(
+                "Please check that the curve and direction arguments are valid."
+            )
 
         # Step 1: fit a smooth line
         if interp_method == "interp1d":
@@ -136,7 +152,6 @@ class KneeLocator(object):
                 RuntimeWarning,
             )
             return None, None
-
         # placeholder for which threshold region i is located in.
         maxima_threshold_index = 0
         minima_threshold_index = 0

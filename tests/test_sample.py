@@ -6,116 +6,116 @@ from kneed.data_generator import DataGenerator as dg
 from kneed.knee_locator import KneeLocator
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_figure2(interp_method):
     """From the kneedle manuscript"""
     x, y = dg.figure2()
-    kl = KneeLocator(x, y, S=1.0, curve='concave', interp_method=interp_method)
+    kl = KneeLocator(x, y, S=1.0, curve="concave", interp_method=interp_method)
     assert math.isclose(kl.knee, 0.22, rel_tol=0.05)
     assert math.isclose(kl.elbow, 0.22, rel_tol=0.05)
     assert math.isclose(kl.norm_elbow, kl.knee, rel_tol=0.05)
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_NoisyGaussian(interp_method):
     """From the Kneedle manuscript"""
     x, y = dg.noisy_gaussian(mu=50, sigma=10, N=10000)
-    kl = KneeLocator(x, y, S=1.0, curve='concave', interp_method=interp_method)
+    kl = KneeLocator(x, y, S=1.0, curve="concave", interp_method=interp_method)
     assert math.isclose(kl.knee, 60.5, rel_tol=7.0)
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_concave_increasing(interp_method):
     """test a concave increasing function"""
     x, y = dg().concave_increasing()
-    kn = KneeLocator(x, y, curve='concave', interp_method=interp_method)
+    kn = KneeLocator(x, y, curve="concave", interp_method=interp_method)
     assert kn.knee == 2
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_concave_decreasing(interp_method):
     """test a concave decreasing function"""
     x, y = dg.concave_decreasing()
     kn = KneeLocator(
-        x, y, curve='concave', direction='decreasing', interp_method=interp_method
+        x, y, curve="concave", direction="decreasing", interp_method=interp_method
     )
     assert kn.knee == 7
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_convex_increasing(interp_method):
     """test a convex increasing function"""
     x, y = dg.convex_increasing()
-    kl = KneeLocator(x, y, curve='convex', interp_method=interp_method)
+    kl = KneeLocator(x, y, curve="convex", interp_method=interp_method)
     assert kl.knee == 7
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_convex_decreasing(interp_method):
     """test a convex decreasing function"""
     x, y = dg.convex_decreasing()
     kl = KneeLocator(
-        x, y, curve='convex', direction='decreasing', interp_method=interp_method
+        x, y, curve="convex", direction="decreasing", interp_method=interp_method
     )
     assert kl.knee == 2
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_concave_increasing_truncated(interp_method):
     """test a truncated concave increasing function"""
     x, y = dg.concave_increasing()
     kl = KneeLocator(
-        x[:-3] / 10, y[:-3] / 10, curve='concave', interp_method=interp_method
+        x[:-3] / 10, y[:-3] / 10, curve="concave", interp_method=interp_method
     )
     assert kl.knee == 0.2
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_concave_decreasing_truncated(interp_method):
     """test a truncated concave decreasing function"""
     x, y = dg.concave_decreasing()
     kl = KneeLocator(
         x[:-3] / 10,
         y[:-3] / 10,
-        curve='concave',
-        direction='decreasing',
+        curve="concave",
+        direction="decreasing",
         interp_method=interp_method,
     )
     assert kl.knee == 0.4
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_convex_increasing_truncated(interp_method):
     """test a truncated convex increasing function"""
     x, y = dg.convex_increasing()
     kl = KneeLocator(
-        x[:-3] / 10, y[:-3] / 10, curve='convex', interp_method=interp_method
+        x[:-3] / 10, y[:-3] / 10, curve="convex", interp_method=interp_method
     )
     assert kl.knee == 0.4
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
 def test_convex_decreasing_truncated(interp_method):
     """test a truncated convex decreasing function"""
     x, y = dg.convex_decreasing()
     kl = KneeLocator(
         x[:-3] / 10,
         y[:-3] / 10,
-        curve='convex',
-        direction='decreasing',
+        curve="convex",
+        direction="decreasing",
         interp_method=interp_method,
     )
     assert kl.knee == 0.2
 
 
 @pytest.mark.parametrize(
-    "interp_method, expected", [('interp1d', 26), ('polynomial', 28)]
+    "interp_method, expected", [("interp1d", 26), ("polynomial", 28)]
 )
 def test_convex_decreasing_bumpy(interp_method, expected):
     """test a bumpy convex decreasing function"""
     x, y = dg.bumpy()
     kl = KneeLocator(
-        x, y, curve='convex', direction='decreasing', interp_method=interp_method
+        x, y, curve="convex", direction="decreasing", interp_method=interp_method
     )
     assert kl.knee == expected
 
@@ -129,7 +129,7 @@ def test_gamma_online_offline(online, expected):
     n = 1000
     x = range(1, n + 1)
     y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing', online=online)
+    kl = KneeLocator(x, y, curve="convex", direction="decreasing", online=online)
     assert kl.knee == expected
 
 
@@ -143,7 +143,7 @@ def test_sensitivity():
     x = range(1, n + 1)
     y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
     for s, expected_knee in zip(sensitivity, expected_knees):
-        kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=s)
+        kl = KneeLocator(x, y, curve="convex", direction="decreasing", S=s)
         detected_knees.append(kl.knee)
         assert kl.knee, expected_knee
 
@@ -153,10 +153,10 @@ def test_sine():
     y_sin = np.sin(x)
 
     sine_combos = [
-        ('decreasing', 'convex'),
-        ('increasing', 'convex'),
-        ('increasing', 'concave'),
-        ('decreasing', 'concave'),
+        ("decreasing", "convex"),
+        ("increasing", "convex"),
+        ("increasing", "concave"),
+        ("decreasing", "concave"),
     ]
     expected_knees = [4.5, 4.9, 7.7, 1.8]
     detected_knees = []
@@ -172,7 +172,7 @@ def test_list_input():
     """Indirectly test that flip works on lists as input"""
     x, y = dg.figure2()
     kl = KneeLocator(
-        x.tolist(), y.tolist(), S=1.0, curve='concave', interp_method='polynomial'
+        x.tolist(), y.tolist(), S=1.0, curve="concave", interp_method="polynomial"
     )
     assert math.isclose(kl.knee, 0.22, rel_tol=0.05)
 
@@ -220,17 +220,17 @@ def test_flat_maxima():
         0.004392386530014641,
     ]
     # When S=0.0 the first local maximum is found.
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=0.0)
+    kl = KneeLocator(x, y, curve="convex", direction="decreasing", S=0.0)
     assert math.isclose(kl.knee, 1.0, rel_tol=0.05)
 
     # When S=1.0 the global maximum is found.
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=1.0)
+    kl = KneeLocator(x, y, curve="convex", direction="decreasing", S=1.0)
     assert math.isclose(kl.knee, 8.0, rel_tol=0.05)
 
 
 def test_all_knees():
     x, y = dg.bumpy()
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing', online=True)
+    kl = KneeLocator(x, y, curve="convex", direction="decreasing", online=True)
     kl.all_elbows == set([41, 46, 53, 26, 31])
     kl.all_norm_elbows == set(
         [
@@ -277,7 +277,7 @@ def test_interp_method():
     """Test that the interp_method argument is valid."""
     x, y = dg.figure2()
     with pytest.raises(ValueError):
-        kl = KneeLocator(x, y, interp_method='not_a_method')
+        kl = KneeLocator(x, y, interp_method="not_a_method")
 
 
 def test_x_equals_y():
@@ -306,3 +306,12 @@ def test_plot_knee():
     kl.plot_knee()
     num_figures_after = plt.gcf().number
     assert num_figures_before < num_figures_after
+
+
+def test_valid_curve_direction():
+    """Test that arguments to curve and direction are valid"""
+    with pytest.raises(ValueError):
+        kl = KneeLocator(range(3), [1, 3, 5], curve="bad curve")
+
+    with pytest.raises(ValueError):
+        kl = KneeLocator(range(3), [1, 3, 5], direction="bad direction")
