@@ -16,12 +16,11 @@ def test_figure2(interp_method):
     assert math.isclose(kl.norm_elbow, kl.knee, rel_tol=0.05)
 
 
-@pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
-def test_NoisyGaussian(interp_method):
+def test_NoisyGaussian():
     """From the Kneedle manuscript"""
-    x, y = dg.noisy_gaussian(mu=50, sigma=10, N=1000)
-    kl = KneeLocator(x, y, S=1.0, curve='concave', interp_method=interp_method)
-    assert math.isclose(kl.knee, 60.0)
+    x, y = dg.noisy_gaussian(mu=50, sigma=10, N=1000, seed=42)
+    kl = KneeLocator(x, y, S=1.0, curve='concave', interp_method='polynomial', polynomial_features=11, online=True)
+    assert math.isclose(kl.knee, 63.0, rel_tol=1e-02)
 
 
 @pytest.mark.parametrize("interp_method", ['interp1d', 'polynomial'])
