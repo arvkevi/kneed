@@ -48,13 +48,6 @@ class KneeLocator(object):
             uspline = interpolate.interp1d(self.x, self.y)
             self.Ds_y = uspline(self.x)
         elif interp_method == "polynomial":
-            # pn_model = PolynomialFeatures(self.polynomial_features)
-            # xpn = pn_model.fit_transform(self.x.reshape(-1, 1))
-            # regr_model = LinearRegression()
-            # regr_model.fit(xpn, self.y)
-            # self.Ds_y = regr_model.predict(
-            #     pn_model.fit_transform(self.x.reshape(-1, 1))
-            # )
             p = np.poly1d(np.polyfit(x, y, self.polynomial_features))
             self.Ds_y = p(x)
         else:
@@ -111,8 +104,8 @@ class KneeLocator(object):
     @staticmethod
     def transform_y(
         y: Iterable[float], direction: str, curve: str
-    ) -> Tuple[Iterable[float], Iterable[float]]:
-        """transform x and y to concave, increasing based on given direction and curve"""
+    ) -> float:
+        """transform y to concave, increasing based on given direction and curve"""
         # convert elbows to knees
         if direction == "decreasing":
             if curve == "concave":
