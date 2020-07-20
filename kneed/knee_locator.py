@@ -1,8 +1,6 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
 import warnings
 from typing import Tuple, Optional, Iterable
 
@@ -17,6 +15,7 @@ class KneeLocator(object):
         direction: str = "increasing",
         interp_method: str = "interp1d",
         online: bool = False,
+        polynomial_features = 7
     ):
         """
         Once instantiated, this class attempts to find the point of maximum
@@ -42,19 +41,22 @@ class KneeLocator(object):
         self.all_knees_y = []
         self.all_norm_knees_y = []
         self.online = online
+        self.polynomial_features = polynomial_features
 
         # Step 1: fit a smooth line
         if interp_method == "interp1d":
             uspline = interpolate.interp1d(self.x, self.y)
             self.Ds_y = uspline(self.x)
         elif interp_method == "polynomial":
-            pn_model = PolynomialFeatures(7)
-            xpn = pn_model.fit_transform(self.x.reshape(-1, 1))
-            regr_model = LinearRegression()
-            regr_model.fit(xpn, self.y)
-            self.Ds_y = regr_model.predict(
-                pn_model.fit_transform(self.x.reshape(-1, 1))
-            )
+            # pn_model = PolynomialFeatures(self.polynomial_features)
+            # xpn = pn_model.fit_transform(self.x.reshape(-1, 1))
+            # regr_model = LinearRegression()
+            # regr_model.fit(xpn, self.y)
+            # self.Ds_y = regr_model.predict(
+            #     pn_model.fit_transform(self.x.reshape(-1, 1))
+            # )
+            p = np.poly1d(np.polyfit(x, y, self.polynomial_features))
+            self.Ds_y = p(x)
         else:
             raise ValueError(
                 "{} is an invalid interp_method parameter, use either 'interp1d' or 'polynomial'".format(
@@ -67,8 +69,8 @@ class KneeLocator(object):
         self.y_normalized = self.__normalize(self.Ds_y)
 
         # Step 3: Calculate the Difference curve
-        self.x_normalized, self.y_normalized = self.transform_xy(
-            self.x_normalized, self.y_normalized, self.direction, self.curve
+        self.y_normalized = self.transform_y(
+            self.y_normalized, self.direction, self.curve
         )
         # normalized difference curve
         self.y_difference = self.y_normalized - self.x_normalized
@@ -107,23 +109,20 @@ class KneeLocator(object):
         return (a - min(a)) / (max(a) - min(a))
 
     @staticmethod
-    def transform_xy(
-        x: Iterable[float], y: Iterable[float], direction: str, curve: str
+    def transform_y(
+        y: Iterable[float], direction: str, curve: str
     ) -> Tuple[Iterable[float], Iterable[float]]:
         """transform x and y to concave, increasing based on given direction and curve"""
         # convert elbows to knees
-        if curve == "convex":
-            x = x.max() - x
-            y = y.max() - y
-        # flip decreasing functions to increasing
         if direction == "decreasing":
-            y = np.flip(y, axis=0)
+            if curve == "concave":
+                y = np.flip(y)
+            elif curve == "convex":
+                y = y.max() - y
+        elif direction == "increasing" and curve == "convex":
+            y = np.flip(y.max() - y)
 
-        if curve == "convex":
-            x = np.flip(x, axis=0)
-            y = np.flip(y, axis=0)
-
-        return x, y
+        return y
 
     def find_knee(self,):
         """This function finds and sets the knee value and the normalized knee value. """
@@ -140,6 +139,7 @@ class KneeLocator(object):
         # placeholder for which threshold region i is located in.
         maxima_threshold_index = 0
         minima_threshold_index = 0
+        traversed_maxima = False
         # traverse the difference curve
         for i, x in enumerate(self.x_difference):
             # skip points on the curve before the the first local maxima
@@ -169,12 +169,12 @@ class KneeLocator(object):
                         norm_knee = self.x_normalized[threshold_index]
                     else:
                         knee = self.x[-(threshold_index + 1)]
-                        norm_knee = self.x_normalized[-(threshold_index + 1)]
+                        norm_knee = self.x_normalized[threshold_index]
 
                 elif self.curve == "concave":
                     if self.direction == "decreasing":
                         knee = self.x[-(threshold_index + 1)]
-                        norm_knee = self.x_normalized[-(threshold_index + 1)]
+                        norm_knee = self.x_normalized[threshold_index]
                     else:
                         knee = self.x[threshold_index]
                         norm_knee = self.x_normalized[threshold_index]
