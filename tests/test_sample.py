@@ -25,7 +25,7 @@ def test_NoisyGaussian():
         S=1.0,
         curve="concave",
         interp_method="polynomial",
-        polynomial_features=11,
+        polynomial_degree=11,
         online=True,
     )
     assert math.isclose(kl.knee, 63.0, rel_tol=1e-02)
@@ -523,3 +523,11 @@ def test_logistic():
     )
     kl = KneeLocator(x, y, curve="convex", direction="increasing", online=True,)
     assert kl.knee == 73
+
+def test_valid_curve_direction():
+    """Test that arguments to curve and direction are valid"""
+    with pytest.raises(ValueError):
+        kl = KneeLocator(range(3), [1, 3, 5], curve="bad curve")
+
+    with pytest.raises(ValueError):
+        kl = KneeLocator(range(3), [1, 3, 5], direction="bad direction")
