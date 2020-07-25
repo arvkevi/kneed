@@ -15,7 +15,7 @@ class KneeLocator(object):
         direction: str = "increasing",
         interp_method: str = "interp1d",
         online: bool = False,
-        polynomial_features=7,
+        polynomial_degree: int = 7,
     ):
         """
         Once instantiated, this class attempts to find the point of maximum
@@ -28,6 +28,7 @@ class KneeLocator(object):
         :param direction: one of {"increasing", "decreasing"}
         :param interp_method: one of {"interp1d", "polynomial"}
         :param online: Will correct old knee points if True, will return first knee if False
+        :param polynomial_degree: The degree of the fitting polynomial. Only used when interp_method="polynomial". This argument is passed to numpy polyfit `deg` parameter.
         """
         # Step 0: Raw Input
         self.x = np.array(x)
@@ -41,14 +42,14 @@ class KneeLocator(object):
         self.all_knees_y = []
         self.all_norm_knees_y = []
         self.online = online
-        self.polynomial_features = polynomial_features
+        self.polynomial_degree = polynomial_degree
 
         # Step 1: fit a smooth line
         if interp_method == "interp1d":
             uspline = interpolate.interp1d(self.x, self.y)
             self.Ds_y = uspline(self.x)
         elif interp_method == "polynomial":
-            p = np.poly1d(np.polyfit(x, y, self.polynomial_features))
+            p = np.poly1d(np.polyfit(x, y, self.polynomial_degree))
             self.Ds_y = p(x)
         else:
             raise ValueError(
