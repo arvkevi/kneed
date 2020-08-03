@@ -23,7 +23,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Citation](#citation)
 
 ## Installation  
-> Tested with Python 3.5, 3.6, and 3.7
+`kneed` has been tested with Python 3.5, 3.6, 3.7 and 3.8.
 
 **anaconda**
 ```bash
@@ -64,7 +64,7 @@ The knee (or elbow) point is calculated simply by instantiating the `KneeLocator
 Here, `kneedle.knee` and/or `kneedle.elbow` store the point of maximum curvature.
 
 ```python
-kneedle = KneeLocator(x, y, S=1.0, curve='concave', direction='increasing')
+kneedle = KneeLocator(x, y, S=1.0, curve="concave", direction="increasing")
 
 print(round(kneedle.knee, 3))
 0.222
@@ -110,6 +110,7 @@ a knee.
 
 ```python
 import numpy as np
+
 np.random.seed(23)
 
 sensitivity = [1, 3, 5, 10, 100, 200, 400]
@@ -120,7 +121,7 @@ n = 1000
 x = range(1, n + 1)
 y = sorted(np.random.gamma(0.5, 1.0, n), reverse=True)
 for s in sensitivity:
-    kl = KneeLocator(x, y, curve='convex', direction='decreasing', S=s)
+    kl = KneeLocator(x, y, curve="convex", direction="decreasing", S=s)
     knees.append(kl.knee)
     norm_knees.append(kl.norm_knee)
 
@@ -131,14 +132,15 @@ print([nk.round(2) for nk in norm_knees])
 [0.04, 0.14, 0.18, 0.26, 0.3, 0.48, 0.48]
 
 import matplotlib.pyplot as plt
-plt.style.use('ggplot');
-plt.figure(figsize=(8, 6));
-plt.plot(kl.x_normalized, kl.y_normalized);
-plt.plot(kl.x_difference, kl.y_difference);
-colors = ['r', 'g', 'k', 'm', 'c', 'orange']
+
+plt.style.use("ggplot")
+plt.figure(figsize=(8, 6))
+plt.plot(kl.x_normalized, kl.y_normalized)
+plt.plot(kl.x_difference, kl.y_difference)
+colors = ["r", "g", "k", "m", "c", "orange"]
 for k, c, s in zip(norm_knees, colors, sensitivity):
-    plt.vlines(k, 0, 1, linestyles='--', colors=c, label=f'S = {s}');
-plt.legend();
+    plt.vlines(k, 0, 1, linestyles="--", colors=c, label=f"S = {s}")
+plt.legend()
 ```
 
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/S_parameter.png)
@@ -151,18 +153,21 @@ The knee point can be corrected if the parameter `online` is `True` (default). T
 
 Using the `x` and `y` from the Sensitivity example above, this time, let's keep `S=1` but modify `online`.
 ```python
-kl_online = KneeLocator(x, y, curve='convex', direction='decreasing', online=True)
-kl_offline = KneeLocator(x, y, curve='convex', direction='decreasing', online=False)
+kl_online = KneeLocator(x, y, curve="convex", direction="decreasing", online=True)
+kl_offline = KneeLocator(x, y, curve="convex", direction="decreasing", online=False)
 
 import matplotlib.pyplot as plt
-plt.style.use('ggplot');
-plt.figure(figsize=(8, 6));
-plt.plot(kl_online.x_normalized, kl_online.y_normalized);
-plt.plot(kl_online.x_difference, kl_online.y_difference);
-colors = ['r', 'g']
-for k, c, o in zip([kl_online.norm_knee, kl_offline.norm_knee], ['r', 'g'], ['online', 'offline']):
-    plt.vlines(k, 0, 1, linestyles='--', colors=c, label=o);
-plt.legend();
+
+plt.style.use("ggplot")
+plt.figure(figsize=(8, 6))
+plt.plot(kl_online.x_normalized, kl_online.y_normalized)
+plt.plot(kl_online.x_difference, kl_online.y_difference)
+colors = ["r", "g"]
+for k, c, o in zip(
+    [kl_online.norm_knee, kl_offline.norm_knee], ["r", "g"], ["online", "offline"]
+):
+    plt.vlines(k, 0, 1, linestyles="--", colors=c, label=o)
+plt.legend()
 ```
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/online_vs_offline.png)
 
@@ -186,14 +191,27 @@ y = [
 ]
 
 # the default spline fit, `interp_method='interp1d'`
-kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', interp_method='interp1d')
+kneedle = KneeLocator(
+    x, y, S=1.0, curve="convex", direction="decreasing", interp_method="interp1d"
+)
 kneedle.plot_knee_normalized()
 ```
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/bumpy_line.png)
 
+Use a `interp_method="polynomial"` to fit a polynomial line to the data. Control the degree by 
+adjusting `polynomial_degree`.
+
 ```python
 # The same data, only using a polynomial fit this time.
-kneedle = KneeLocator(x, y, S=1.0, curve='convex', direction='decreasing', interp_method='polynomial')
+kneedle = KneeLocator(
+    x,
+    y,
+    S=1.0,
+    curve="convex",
+    direction="decreasing",
+    interp_method="polynomial",
+    polynomial_degree=7,
+)
 kneedle.plot_knee_normalized()
 ```
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/bumpy_line.smoothed.png)
@@ -205,7 +223,14 @@ This simulate 5,000 `NoisyGaussian` instances and finds the average.
 knees = []
 for i in range(5):
     x, y = DataGenerator.noisy_gaussian(mu=50, sigma=10, N=1000)
-    kneedle = KneeLocator(x, y, curve='concave', direction='increasing', interp_method='polynomial', online=True)
+    kneedle = KneeLocator(
+        x,
+        y,
+        curve="concave",
+        direction="increasing",
+        interp_method="polynomial",
+        online=True,
+    )
     knees.append(kneedle.knee)
 
 # average knee point
@@ -219,7 +244,7 @@ Find the optimal number of clusters (k) to use in k-means clustering.
 See the [tutorial in the notebooks](https://github.com/arvkevi/kneed/blob/master/notebooks/decreasing_function_walkthrough.ipynb) directory.
 
 ```python
-KneeLocator(x, y, curve='convex', direction='decreasing')
+KneeLocator(x, y, curve="convex", direction="decreasing")
 ```
 
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/knee.png)

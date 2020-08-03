@@ -1,10 +1,11 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
 import warnings
 from typing import Tuple, Optional, Iterable
+
+VALID_CURVE = ["convex", "concave"]
+VALID_DIRECTION = ["increasing", "decreasing"]
 
 
 class KneeLocator(object):
@@ -17,6 +18,7 @@ class KneeLocator(object):
         direction: str = "increasing",
         interp_method: str = "interp1d",
         online: bool = False,
+        polynomial_degree: int = 7,
     ):
         """
         Once instantiated, this class attempts to find the point of maximum
@@ -29,6 +31,7 @@ class KneeLocator(object):
         :param direction: one of {"increasing", "decreasing"}
         :param interp_method: one of {"interp1d", "polynomial"}
         :param online: Will correct old knee points if True, will return first knee if False
+        :param polynomial_degree: The degree of the fitting polynomial. Only used when interp_method="polynomial". This argument is passed to numpy polyfit `deg` parameter.
         """
         # Step 0: Raw Input
         self.x = np.array(x)
@@ -42,19 +45,28 @@ class KneeLocator(object):
         self.all_knees_y = []
         self.all_norm_knees_y = []
         self.online = online
+        self.polynomial_degree = polynomial_degree
+
+        # I'm implementing Look Before You Leap (LBYL) validation for direction
+        # and curve arguments. This is not preferred in Python. The motivation
+        # is that the logic inside the conditional once y_difference[j] is less
+        # than threshold in find_knee() could have been evaluated improperly if
+        # they weren't one of convex, concave, increasing, or decreasing,
+        # respectively.
+        valid_curve = self.curve in VALID_CURVE
+        valid_direction = self.direction in VALID_DIRECTION
+        if not all((valid_curve, valid_direction)):
+            raise ValueError(
+                "Please check that the curve and direction arguments are valid."
+            )
 
         # Step 1: fit a smooth line
         if interp_method == "interp1d":
             uspline = interpolate.interp1d(self.x, self.y)
             self.Ds_y = uspline(self.x)
         elif interp_method == "polynomial":
-            pn_model = PolynomialFeatures(7)
-            xpn = pn_model.fit_transform(self.x.reshape(-1, 1))
-            regr_model = LinearRegression()
-            regr_model.fit(xpn, self.y)
-            self.Ds_y = regr_model.predict(
-                pn_model.fit_transform(self.x.reshape(-1, 1))
-            )
+            p = np.poly1d(np.polyfit(x, y, self.polynomial_degree))
+            self.Ds_y = p(x)
         else:
             raise ValueError(
                 "{} is an invalid interp_method parameter, use either 'interp1d' or 'polynomial'".format(
@@ -67,8 +79,8 @@ class KneeLocator(object):
         self.y_normalized = self.__normalize(self.Ds_y)
 
         # Step 3: Calculate the Difference curve
-        self.x_normalized, self.y_normalized = self.transform_xy(
-            self.x_normalized, self.y_normalized, self.direction, self.curve
+        self.y_normalized = self.transform_y(
+            self.y_normalized, self.direction, self.curve
         )
         # normalized difference curve
         self.y_difference = self.y_normalized - self.x_normalized
@@ -107,23 +119,18 @@ class KneeLocator(object):
         return (a - min(a)) / (max(a) - min(a))
 
     @staticmethod
-    def transform_xy(
-        x: Iterable[float], y: Iterable[float], direction: str, curve: str
-    ) -> Tuple[Iterable[float], Iterable[float]]:
-        """transform x and y to concave, increasing based on given direction and curve"""
+    def transform_y(y: Iterable[float], direction: str, curve: str) -> float:
+        """transform y to concave, increasing based on given direction and curve"""
         # convert elbows to knees
-        if curve == "convex":
-            x = x.max() - x
-            y = y.max() - y
-        # flip decreasing functions to increasing
         if direction == "decreasing":
-            y = np.flip(y, axis=0)
+            if curve == "concave":
+                y = np.flip(y)
+            elif curve == "convex":
+                y = y.max() - y
+        elif direction == "increasing" and curve == "convex":
+            y = np.flip(y.max() - y)
 
-        if curve == "convex":
-            x = np.flip(x, axis=0)
-            y = np.flip(y, axis=0)
-
-        return x, y
+        return y
 
     def find_knee(self,):
         """This function finds and sets the knee value and the normalized knee value. """
@@ -136,10 +143,10 @@ class KneeLocator(object):
                 RuntimeWarning,
             )
             return None, None
-
         # placeholder for which threshold region i is located in.
         maxima_threshold_index = 0
         minima_threshold_index = 0
+        traversed_maxima = False
         # traverse the difference curve
         for i, x in enumerate(self.x_difference):
             # skip points on the curve before the the first local maxima
@@ -169,12 +176,12 @@ class KneeLocator(object):
                         norm_knee = self.x_normalized[threshold_index]
                     else:
                         knee = self.x[-(threshold_index + 1)]
-                        norm_knee = self.x_normalized[-(threshold_index + 1)]
+                        norm_knee = self.x_normalized[threshold_index]
 
                 elif self.curve == "concave":
                     if self.direction == "decreasing":
                         knee = self.x[-(threshold_index + 1)]
-                        norm_knee = self.x_normalized[-(threshold_index + 1)]
+                        norm_knee = self.x_normalized[threshold_index]
                     else:
                         knee = self.x[threshold_index]
                         norm_knee = self.x_normalized[threshold_index]
