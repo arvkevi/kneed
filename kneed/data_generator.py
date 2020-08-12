@@ -4,18 +4,19 @@ from typing import Iterable, Tuple
 
 
 class DataGenerator(object):
-    """Generate data to work with kneedle."""
+    """Generate synthetic data to work with kneed."""
 
     @staticmethod
     def noisy_gaussian(
         mu: float = 50, sigma: float = 10, N: int = 100, seed=42
     ) -> Tuple[Iterable[float], Iterable[float]]:
         """Recreate NoisyGaussian from the orignial kneedle paper.
+
         :param mu: The mean value to build a normal distribution around
         :param sigma: The standard deviation of the distribution.
         :param N: The number of samples to draw from to build the normal distribution.
         :param seed: An integer to set the random seed.
-        :returns: tuple(x, y)
+        :return: tuple(x, y)
         """
         np.random.seed(seed)
         z = np.random.normal(loc=mu, scale=sigma, size=N)
@@ -26,7 +27,8 @@ class DataGenerator(object):
     @staticmethod
     def figure2() -> Tuple[Iterable[float], Iterable[float]]:
         """Recreate the values in figure 2 from the original kneedle paper.
-        :returns: tuple(x, y)
+
+        :return: tuple(x, y)
         """
         with np.errstate(divide="ignore"):
             x = np.linspace(0.0, 1, 10)
@@ -34,8 +36,9 @@ class DataGenerator(object):
 
     @staticmethod
     def convex_increasing() -> Tuple[Iterable[float], Iterable[float]]:
-        """Generate a sample increasing convex function
-        :returns: tuple(x, y)
+        """Generate a sample increasing convex function.
+
+        :return: tuple(x, y)
         """
         x = np.arange(0, 10)
         y_convex_inc = np.array([1, 2, 3, 4, 5, 10, 15, 20, 40, 100])
@@ -43,8 +46,9 @@ class DataGenerator(object):
 
     @staticmethod
     def convex_decreasing() -> Tuple[Iterable[float], Iterable[float]]:
-        """Generate a sample decreasing convex function
-        :returns: tuple(x, y)
+        """Generate a sample decreasing convex function.
+
+        :return: tuple(x, y)
         """
         x = np.arange(0, 10)
         y_convex_dec = np.array([100, 40, 20, 15, 10, 5, 4, 3, 2, 1])
@@ -52,8 +56,9 @@ class DataGenerator(object):
 
     @staticmethod
     def concave_decreasing() -> Tuple[Iterable[float], Iterable[float]]:
-        """Generate a sample decreasing concave function
-        :returns: tuple(x, y)
+        """Generate a sample decreasing concave function.
+
+        :return: tuple(x, y)
         """
         x = np.arange(0, 10)
         y_concave_dec = np.array([99, 98, 97, 96, 95, 90, 85, 80, 60, 0])
@@ -61,8 +66,9 @@ class DataGenerator(object):
 
     @staticmethod
     def concave_increasing() -> Tuple[Iterable[float], Iterable[float]]:
-        """Generate a sample increasing concave function
-        :returns: tuple(x, y)
+        """Generate a sample increasing concave function.
+
+        :return: tuple(x, y)
         """
         x = np.arange(0, 10)
         y_concave_inc = np.array([0, 60, 80, 85, 90, 95, 96, 97, 98, 99])
@@ -70,8 +76,9 @@ class DataGenerator(object):
 
     @staticmethod
     def bumpy() -> Tuple[Iterable[float], Iterable[float]]:
-        """Generate a sample function with local minima/maxima
-        :returns: tuple(x, y)
+        """Generate a sample function with local minima/maxima.
+
+        :return: tuple(x, y)
         """
         x_bumpy = list(range(90))
         y_bumpy = [
