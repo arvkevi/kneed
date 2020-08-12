@@ -93,7 +93,7 @@ kneedle.plot_knee()
 ![](https://raw.githubusercontent.com/arvkevi/kneed/master/images/figure2.knee.raw.png)
 
 ## Documentation
-Documentation of the parameters and a full API reference can be found [here]().
+Documentation of the parameters and a full API reference can be found [here](https://kneed.readthedocs.io/).
 
 ## Contributing
 
