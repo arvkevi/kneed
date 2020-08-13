@@ -3,8 +3,7 @@
 Parameter Examples
 ==================
 
-This page provides examples that outline the effect of tuning the parameters
-for the `KneeLocator` class.
+This page provides examples that outline the effect of tuning the parameters for `KneeLocator`.
 
 curve
 -----
@@ -21,7 +20,6 @@ An concave curve example:
     kl.plot_knee()
 
 .. image:: ../images/concave.png
-
 
 A convex curve example:
 
@@ -66,9 +64,9 @@ An example of a decreasing curve:
 S
 -
 
-The selected knee point is tunable by setting the sensitivity parameter `S`. From the manuscript:
+The selected knee point is tunable by setting the sensitivity parameter `S`. From the kneedle manuscript:
 
-> The sensitivity parameter allows us to adjust how aggressive we want Kneedle to be when detecting knees. Smaller values for S detect knees quicker, while larger values are more conservative. Put simply, S is a measure of how many “flat” points we expect to see in the unmodified data curve before declaring a knee.
+    The sensitivity parameter allows us to adjust how aggressive we want Kneedle to be when detecting knees. Smaller values for S detect knees quicker, while larger values are more conservative. Put simply, S is a measure of how many “flat” points we expect to see in the unmodified data curve before declaring a knee.
 
 .. code-block:: python
 
@@ -107,8 +105,7 @@ The selected knee point is tunable by setting the sensitivity parameter `S`. Fro
 
 .. image:: ../images/S_parameter.png
 
-Notice that any `S`>200 will result in a knee at 482 (0.48, normalized) in the plot above.
-
+Any `S`>200 will result in a knee at 482 (0.48, normalized) in the plot above.
 
 online
 ------
