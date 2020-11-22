@@ -15,6 +15,7 @@ head over to the :ref:`api`.
 .. toctree::
    parameters
    api
+   interactive
 
 
 Indices and tables

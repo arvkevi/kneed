@@ -10,10 +10,11 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 ## Table of contents
 - [Installation](#installation)
 - [Usage](#usage)
-    * [Input Data](#input-data)
-    * [Find Knee](#find-knee)
-    * [Visualize](#visualize)
+  - [Input Data](#input-data)
+  - [Find Knee](#find-knee)
+  - [Visualize](#visualize)
 - [Documentation](#documentation)
+- [Interactive](#interactive)
 - [Contributing](#contributing)
 - [Citation](#citation)
 
@@ -94,6 +95,16 @@ kneedle.plot_knee()
 
 ## Documentation
 Documentation of the parameters and a full API reference can be found [here](https://kneed.readthedocs.io/).
+
+## Interactive
+An interactive streamlit app was developed to help users explore the effect of tuning the parameters.
+There are two sites where you can test out kneed by copy-pasting your own data:
+1. https://share.streamlit.io/arvkevi/ikneed/main/ikneed.py
+2. https://ikneed.herokuapp.com/
+
+You can also run your own version -- head over to the [source code for ikneed](https://github.com/arvkevi/ikneed).
+
+![ikneed](images/ikneed.gif)
 
 ## Contributing
 
