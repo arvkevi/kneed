@@ -17,5 +17,4 @@ def find_shape(x, y):
         return 'increasing', 'convex'
     if p[0] <= 0 and q > 0:
         return 'decreasing', 'concave'
-    else:
-        return 'decreasing', 'convex'
+    return 'decreasing', 'convex'
