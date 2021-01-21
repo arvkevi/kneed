@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 from kneed.data_generator import DataGenerator as dg
 from kneed.knee_locator import KneeLocator
+from kneed.shape_detector import find_shape
 
 
 @pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
@@ -531,3 +532,24 @@ def test_valid_curve_direction():
 
     with pytest.raises(ValueError):
         kl = KneeLocator(range(3), [1, 3, 5], direction="bad direction")
+
+
+def test_find_shape():
+    """Test that find_shape can detect the right shape of curve line"""
+    x, y = dg.concave_increasing()
+    direction, curve = find_shape(x, y)
+    assert direction == 'increasing'
+    assert curve == 'concave'
+    x, y = dg.concave_decreasing()
+    direction, curve = find_shape(x, y)
+    assert direction == 'decreasing'
+    assert curve == 'concave'
+    x, y = dg.convex_decreasing()
+    direction, curve = find_shape(x, y)
+    assert direction == 'decreasing'
+    assert curve == 'convex'
+    x, y = dg.convex_increasing()
+    direction, curve = find_shape(x, y)
+    assert direction == 'increasing'
+    assert curve == 'convex'
+
