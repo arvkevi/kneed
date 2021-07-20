@@ -1,5 +1,4 @@
 import numpy as np
-from scipy import interpolate
 from scipy.signal import argrelextrema
 import warnings
 from typing import Tuple, Optional, Iterable
@@ -161,8 +160,7 @@ class KneeLocator(object):
 
         # Step 1: fit a smooth line
         if interp_method == "interp1d":
-            uspline = interpolate.interp1d(self.x, self.y)
-            self.Ds_y = uspline(self.x)
+            self.Ds_y = np.float(self.y)
         elif interp_method == "polynomial":
             p = np.poly1d(np.polyfit(x, y, self.polynomial_degree))
             self.Ds_y = p(x)
