@@ -1,4 +1,0 @@
-#!/bin/bash
-
-pip install scikit-learn
-pip install seaborn
