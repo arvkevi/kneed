@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Arvai"
+  given-names: "Kevin"
+  orcid: "https://orcid.org/0000-0001-8751-8918"
+title: "kneed"
+version: 0.7.0
+doi: 10.5281/zenodo.6496267
+date-released: 2020-08-12
+url: "https://github.com/arvkevi/kneed"
