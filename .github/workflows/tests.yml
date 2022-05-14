@@ -1,6 +1,6 @@
 name: Unit tests and coverage
 
-on: [push]
+on: [push,workflow_dispatch]
 
 jobs:
   build:
