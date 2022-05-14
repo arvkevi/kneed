@@ -27,11 +27,11 @@ jobs:
           pip install -e .
       - name: Generate coverage report
         run: |
-          pytest --cov=./ --cov-report=xml
+          pytest --cov=./coverage --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
-          directory: ./coverage/reports/
+          directory: ./coverage/
           env_vars: OS,PYTHON
           fail_ci_if_error: true
           flags: unittests
