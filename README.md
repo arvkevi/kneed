@@ -20,7 +20,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Citation](#citation)
 
 ## Installation  
-`kneed` has been tested with Python 3.5, 3.6, 3.7 and 3.8.
+`kneed` has been tested with Python 3.5, 3.6, 3.7, 3.8, 3.9, and 3.10.
 
 **anaconda**
 ```bash
