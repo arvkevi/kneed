@@ -7,6 +7,13 @@ from typing import Tuple, Optional, Iterable
 VALID_CURVE = ["convex", "concave"]
 VALID_DIRECTION = ["increasing", "decreasing"]
 
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    _has_matplotlib = False
+    _matplotlib_not_found_err = ModuleNotFoundError("This function needs Matplotlib to be executed. Please run command `pip install kneed[plot]` ")
+else:
+    _has_matplotlib = True
 
 class KneeLocator(object):
     """
@@ -313,7 +320,8 @@ class KneeLocator(object):
             The figure size of the plot. Example (12, 8)
         :return: NoReturn
         """
-        import matplotlib.pyplot as plt
+        if not _has_matplotlib:
+            raise _matplotlib_not_found_err
 
         if figsize is None:
             figsize = (6, 6)
@@ -346,7 +354,8 @@ class KneeLocator(object):
             The figure size of the plot. Example (12, 8)
         :return: NoReturn
         """
-        import matplotlib.pyplot as plt
+        if not _has_matplotlib:
+            raise _matplotlib_not_found_err
 
         if figsize is None:
             figsize = (6, 6)

@@ -29,13 +29,14 @@ $ conda install -c conda-forge kneed
 
 **pip**
 ```bash
-$ pip install kneed
+$ pip install kneed # To install only knee-detection algorithm
+$ pip install kneed[plot] # To also install plotting functions for quick visualizations
 ```
 
 **Clone from GitHub**
 ```bash
 $ git clone https://github.com/arvkevi/kneed.git
-$ python setup.py install
+$ pip install -e .
 ```
 
 ## Usage
