@@ -55,18 +55,11 @@ Once forked, use the following steps to get your development environment set up 
 
 3. Install dependencies.
 
-    Kneed's dependencies are in the `requirements.txt` document at the root of the repository. Open this file and uncomment the dependencies that are for development only. Then install the dependencies with `pip`:
+    Kneed's main dependencies are in the `requirements.txt` document at the root of the repository, however you will later also need to install testing dependencies.
+    Install them all with `pip`:
 
     ```
-    $ pip install -r requirements.txt
-    ```
-
-    Note that there are dependencies required for testing, you can simply install them with `pip`. For example to install
-    the additional dependencies for building the documentation or to run the
-    test suite, use the `requirements.txt` files in those directories:
-
-    ```
-    $ pip install -r tests/requirements.txt
+    $ pip install -e .[testing]
     ```
 
 At this point you're ready to get started writing code!

@@ -35,7 +35,7 @@ $ pip install kneed[plot] # To also install plotting functions for quick visuali
 
 **Clone from GitHub**
 ```bash
-$ git clone https://github.com/arvkevi/kneed.git
+$ git clone https://github.com/arvkevi/kneed.git && cd kneed
 $ pip install -e .
 ```
 
