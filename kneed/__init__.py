@@ -1,6 +1,7 @@
+import pkgutil
+
 from .data_generator import DataGenerator
 from .knee_locator import KneeLocator
 from .shape_detector import find_shape
 
-with open("kneed/VERSION", mode='r', encoding="utf-8") as f:
-    __version__ = f.readline()
+__version__ = pkgutil.get_data(__name__, "VERSION").decode("utf-8").strip()
