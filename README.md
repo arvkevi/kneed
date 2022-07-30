@@ -20,7 +20,7 @@ This repository is an attempt to implement the kneedle algorithm, published [her
 - [Citation](#citation)
 
 ## Installation  
-`kneed` has been tested with Python 3.5, 3.6, 3.7, 3.8, 3.9, and 3.10.
+`kneed` has been tested with Python 3.7, 3.8, 3.9, and 3.10.
 
 **anaconda**
 ```bash
@@ -29,13 +29,14 @@ $ conda install -c conda-forge kneed
 
 **pip**
 ```bash
-$ pip install kneed
+$ pip install kneed # To install only knee-detection algorithm
+$ pip install kneed[plot] # To also install plotting functions for quick visualizations
 ```
 
 **Clone from GitHub**
 ```bash
-$ git clone https://github.com/arvkevi/kneed.git
-$ python setup.py install
+$ git clone https://github.com/arvkevi/kneed.git && cd kneed
+$ pip install -e .
 ```
 
 ## Usage
