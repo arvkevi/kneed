@@ -313,11 +313,17 @@ class KneeLocator(object):
 
         return knee, norm_knee
 
-    def plot_knee_normalized(self, figsize: Optional[Tuple[int, int]] = None):
+    def plot_knee_normalized(self, figsize: Optional[Tuple[int, int]] = None, title: str = "Normalized Knee Point", xlabel: Optional[str] = None, ylabel: Optional[str] = None):
         """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists.
 
         :param figsize: Optional[Tuple[int, int]
             The figure size of the plot. Example (12, 8)
+        :param title: str
+            Title of the visualization, defaults to "Normalized Knee Point"
+        :param xlabel: Optional[str]
+            X-axis label
+        :param ylabel: Optional[str]
+            y-axis label
         :return: NoReturn
         """
         if not _has_matplotlib:
@@ -327,7 +333,11 @@ class KneeLocator(object):
             figsize = (6, 6)
 
         plt.figure(figsize=figsize)
-        plt.title("Normalized Knee Point")
+        plt.title(title)
+        if xlabel:
+            plt.xlabel(xlabel)
+        if ylabel:
+            plt.ylabel(ylabel)
         plt.plot(self.x_normalized, self.y_normalized, "b", label="normalized curve")
         plt.plot(self.x_difference, self.y_difference, "r", label="difference curve")
         plt.xticks(
@@ -346,12 +356,18 @@ class KneeLocator(object):
         )
         plt.legend(loc="best")
 
-    def plot_knee(self, figsize: Optional[Tuple[int, int]] = None):
+    def plot_knee(self, figsize: Optional[Tuple[int, int]] = None, title: str = "Knee Point", xlabel: Optional[str] = None, ylabel: Optional[str] = None):
         """
         Plot the curve and the knee, if it exists
 
         :param figsize: Optional[Tuple[int, int]
             The figure size of the plot. Example (12, 8)
+        :param title: str
+            Title of the visualization, defaults to "Knee Point"
+        :param xlabel: Optional[str]
+            X-axis label
+        :param ylabel: Optional[str]
+            y-axis label
         :return: NoReturn
         """
         if not _has_matplotlib:
@@ -361,7 +377,11 @@ class KneeLocator(object):
             figsize = (6, 6)
 
         plt.figure(figsize=figsize)
-        plt.title("Knee Point")
+        plt.title(title)
+        if xlabel:
+            plt.xlabel(xlabel)
+        if ylabel:
+            plt.ylabel(ylabel)
         plt.plot(self.x, self.y, "b", label="data")
         plt.vlines(
             self.knee, plt.ylim()[0], plt.ylim()[1], linestyles="--", label="knee/elbow"
