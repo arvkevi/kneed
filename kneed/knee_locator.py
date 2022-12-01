@@ -20,10 +20,10 @@ class KneeLocator(object):
     Once instantiated, this class attempts to find the point of maximum
     curvature on a line. The knee is accessible via the `.knee` attribute.
 
-    :param x: x values.
-    :type x: array-like
-    :param y: y values.
-    :type y: array-like
+    :param x: x values, must be the same length as y.
+    :type x: 1D array of shape (`number_of_y_values`,) or list
+    :param y: y values, must be the same length as x.
+    :type y: 1D array of shape (`number_of_y_values`,) or list
     :param S: Sensitivity, original paper suggests default of 1.0
     :type S: float
     :param curve: If 'concave', algorithm will detect knees. If 'convex', it
