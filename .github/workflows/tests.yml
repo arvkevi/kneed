@@ -25,7 +25,9 @@ jobs:
           pip install -e .[testing]
       - name: Generate coverage report
         run: |
-          pytest --cov=kneed --cov-report=xml
+          pytest --cov=kneed --cov-report=xml:coverage1.xml tests/test_sample.py
+          pip uninstall -y matplotlib
+          pytest --cov=kneed --cov-report=xml:coverage2.xml tests/test_no_matplotlib.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
