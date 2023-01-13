@@ -6,7 +6,7 @@ I have tried to follow the `Kneedle` algorithm as best as I could interpret from
 but the source code is far from perfect and could benefit from improvements.
 
 - Submit a bug report or feature request on [GitHub Issues](https://github.com/arvkevi/kneed/issues).
-- Contribute a Jupyter notebook to [notebooks](https://github.com/arvkevi/kneed/tree/master/notebooks).
+- Contribute a Jupyter notebook to [notebooks](https://github.com/arvkevi/kneed/tree/main/notebooks).
 - Documenting applications where `kneed` could be useful.
 - Code refactors -- the code was refactored in `0.4.0` to be more human-readable. However I think the code could still be greatly improved
 by breaking the `KneeLocator` class into a collection of methods. This would make the algorithm easier to unittest.
