@@ -242,10 +242,9 @@ class KneeLocator(object):
     def transform_x(x: Iterable[float], direction: str, curve: str) -> float:
         """transform x to concave, increasing based on given direction and curve"""
         # convert elbows to knees
-        if direction == "decreasing" and curve == "concave":
-            x = x.max - x
-        elif direction == "increasing" and curve == "convex":
-            x = x.max - x
+        if (direction == "decreasing" and curve == "concave") or (
+            direction == "increasing" and curve == "convex":
+            x = x.max() - x
          
         return x
     
