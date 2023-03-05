@@ -188,6 +188,11 @@ class KneeLocator(object):
         self.y_normalized = self.transform_y(
             self.y_normalized, self.direction, self.curve
         )
+
+        self.x_normalized = self.transform_x(
+            self.x_normalized, self.direction, self.curve
+        )
+        # normalized difference curve
         # normalized difference curve
         self.y_difference = self.y_normalized - self.x_normalized
         self.x_difference = self.x_normalized.copy()
@@ -228,16 +233,22 @@ class KneeLocator(object):
     def transform_y(y: Iterable[float], direction: str, curve: str) -> float:
         """transform y to concave, increasing based on given direction and curve"""
         # convert elbows to knees
-        if direction == "decreasing":
-            if curve == "concave":
-                y = np.flip(y)
-            elif curve == "convex":
-                y = y.max() - y
-        elif direction == "increasing" and curve == "convex":
-            y = np.flip(y.max() - y)
+        if curve == "convex":
+            y = y.max() - y
 
         return y
 
+    @staticmethod
+    def transform_x(x: Iterable[float], direction: str, curve: str) -> float:
+        """transform x to concave, increasing based on given direction and curve"""
+        # convert elbows to knees
+        if direction == "decreasing" and curve == "concave":
+            x = x.max - x
+        elif direction == "increasing" and curve == "convex":
+            x = x.max - x
+         
+        return x
+    
     def find_knee(self,):
         """This function is called when KneeLocator is instantiated. It identifies the knee value and sets the instance attributes."""
         if not self.maxima_indices.size:
