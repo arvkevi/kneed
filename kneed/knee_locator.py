@@ -243,7 +243,7 @@ class KneeLocator(object):
         """transform x to concave, increasing based on given direction and curve"""
         # convert elbows to knees
         if (direction == "decreasing" and curve == "concave") or (
-            direction == "increasing" and curve == "convex":
+            direction == "increasing" and curve == "convex"):
             x = x.max() - x
          
         return x
