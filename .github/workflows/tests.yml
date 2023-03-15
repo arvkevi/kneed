@@ -20,6 +20,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           ref: ${{ github.ref }}
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
