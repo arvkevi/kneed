@@ -272,7 +272,7 @@ class KneeLocator(object):
             j = i + 1
 
             # reached the end of the curve
-            if x == 1.0:
+            if i == (len(self.x_difference) - 1):
                 break
 
             # if we're at a local max, increment the maxima threshold index and continue
