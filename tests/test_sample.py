@@ -552,3 +552,7 @@ def test_find_shape():
     direction, curve = find_shape(x, y)
     assert direction == 'increasing'
     assert curve == 'convex'
+
+
+def test_fail():
+    assert False
