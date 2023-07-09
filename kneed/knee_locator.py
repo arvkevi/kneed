@@ -122,7 +122,7 @@ class KneeLocator(object):
     :vartype all_elbows: set
     :ivar all_norm_elbows: The normalized x values of all the identified knee points (elbow and knee are interchangeable).
     :vartype all_norm_elbows: set
-    :ivar all_norm_elbowss_y: The normalized y values of all the identified knee points (elbow and knee are interchangeable).
+    :ivar all_norm_elbows_y: The normalized y values of all the identified knee points (elbow and knee are interchangeable).
     :vartype all_norm_elbows: set
     """
 
