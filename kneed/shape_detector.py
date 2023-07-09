@@ -12,9 +12,9 @@ def find_shape(x, y):
     x1, x2 = int(len(x) * 0.2), int(len(x) * 0.8)
     q = np.mean(y[x1:x2]) - np.mean(x[x1:x2] * p[0] + p[1])
     if p[0] > 0 and q > 0:
-        return 'increasing', 'concave'
+        return "increasing", "concave"
     if p[0] > 0 and q <= 0:
-        return 'increasing', 'convex'
+        return "increasing", "convex"
     if p[0] <= 0 and q > 0:
-        return 'decreasing', 'concave'
-    return 'decreasing', 'convex'
+        return "decreasing", "concave"
+    return "decreasing", "convex"

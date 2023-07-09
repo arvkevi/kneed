@@ -290,11 +290,12 @@ def test_interp_method():
 
 
 def test_x_equals_y():
-    """Test that a runtime warning is raised when no maxima are found"""
+    """Test that knee is None when no maxima are found"""
     x = range(10)
     y = [1] * len(x)
-    with pytest.warns(RuntimeWarning):
-        kl = KneeLocator(x, y)
+    kl = KneeLocator(x, y)
+    assert kl.knee is None
+
 
 
 def test_plot_knee_normalized():
@@ -522,8 +523,15 @@ def test_logistic():
             98.0,
         ]
     )
-    kl = KneeLocator(x, y, curve="convex", direction="increasing", online=True,)
+    kl = KneeLocator(
+        x,
+        y,
+        curve="convex",
+        direction="increasing",
+        online=True,
+    )
     assert kl.knee == 73
+
 
 def test_valid_curve_direction():
     """Test that arguments to curve and direction are valid"""
@@ -538,17 +546,17 @@ def test_find_shape():
     """Test that find_shape can detect the right shape of curve line"""
     x, y = dg.concave_increasing()
     direction, curve = find_shape(x, y)
-    assert direction == 'increasing'
-    assert curve == 'concave'
+    assert direction == "increasing"
+    assert curve == "concave"
     x, y = dg.concave_decreasing()
     direction, curve = find_shape(x, y)
-    assert direction == 'decreasing'
-    assert curve == 'concave'
+    assert direction == "decreasing"
+    assert curve == "concave"
     x, y = dg.convex_decreasing()
     direction, curve = find_shape(x, y)
-    assert direction == 'decreasing'
-    assert curve == 'convex'
+    assert direction == "decreasing"
+    assert curve == "convex"
     x, y = dg.convex_increasing()
     direction, curve = find_shape(x, y)
-    assert direction == 'increasing'
-    assert curve == 'convex'
+    assert direction == "increasing"
+    assert curve == "convex"

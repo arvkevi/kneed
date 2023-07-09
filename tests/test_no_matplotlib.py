@@ -10,6 +10,7 @@ def test_plot_knee_normalized():
         kl = KneeLocator(x, y, S=1.0, curve="concave", interp_method="interp1d")
         kl.plot_knee_normalized()
 
+
 def test_plot_knee():
     """Test that error is raised when matplotlib is not installed"""
     with pytest.raises(ModuleNotFoundError):
