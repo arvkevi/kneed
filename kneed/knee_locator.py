@@ -11,9 +11,12 @@ try:
     import matplotlib.pyplot as plt
 except ImportError:
     _has_matplotlib = False
-    _matplotlib_not_found_err = ModuleNotFoundError("This function needs Matplotlib to be executed. Please run command `pip install kneed[plot]` ")
+    _matplotlib_not_found_err = ModuleNotFoundError(
+        "This function needs Matplotlib to be executed. Please run command `pip install kneed[plot]` "
+    )
 else:
     _has_matplotlib = True
+
 
 class KneeLocator(object):
     """
@@ -236,7 +239,9 @@ class KneeLocator(object):
 
         return y
 
-    def find_knee(self,):
+    def find_knee(
+        self,
+    ):
         """This function is called when KneeLocator is instantiated. It identifies the knee value and sets the instance attributes."""
         if not self.maxima_indices.size:
             warnings.warn(
@@ -311,7 +316,13 @@ class KneeLocator(object):
 
         return knee, norm_knee
 
-    def plot_knee_normalized(self, figsize: Optional[Tuple[int, int]] = None, title: str = "Normalized Knee Point", xlabel: Optional[str] = None, ylabel: Optional[str] = None):
+    def plot_knee_normalized(
+        self,
+        figsize: Optional[Tuple[int, int]] = None,
+        title: str = "Normalized Knee Point",
+        xlabel: Optional[str] = None,
+        ylabel: Optional[str] = None,
+    ):
         """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists.
 
         :param figsize: Optional[Tuple[int, int]
@@ -354,7 +365,13 @@ class KneeLocator(object):
         )
         plt.legend(loc="best")
 
-    def plot_knee(self, figsize: Optional[Tuple[int, int]] = None, title: str = "Knee Point", xlabel: Optional[str] = None, ylabel: Optional[str] = None):
+    def plot_knee(
+        self,
+        figsize: Optional[Tuple[int, int]] = None,
+        title: str = "Knee Point",
+        xlabel: Optional[str] = None,
+        ylabel: Optional[str] = None,
+    ):
         """
         Plot the curve and the knee, if it exists
 
