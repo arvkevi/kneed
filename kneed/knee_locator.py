@@ -1,7 +1,6 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
-import warnings
 from typing import Tuple, Optional, Iterable
 
 VALID_CURVE = ["convex", "concave"]
@@ -244,13 +243,10 @@ class KneeLocator(object):
     ):
         """This function is called when KneeLocator is instantiated. It identifies the knee value and sets the instance attributes."""
         if not self.maxima_indices.size:
-            warnings.warn(
-                "No local maxima found in the difference curve\n"
-                "The line is probably not polynomial, try plotting\n"
-                "the difference curve with plt.plot(knee.x_difference, knee.y_difference)\n"
-                "Also check that you aren't mistakenly setting the curve argument",
-                RuntimeWarning,
-            )
+            # No local maxima found in the difference curve
+            # The line is probably not polynomial, try plotting
+            # the difference curve with plt.plot(knee.x_difference, knee.y_difference)
+            # Also check that you aren't mistakenly setting the curve argument
             return None, None
         # placeholder for which threshold region i is located in.
         maxima_threshold_index = 0

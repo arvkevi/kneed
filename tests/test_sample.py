@@ -290,11 +290,12 @@ def test_interp_method():
 
 
 def test_x_equals_y():
-    """Test that a runtime warning is raised when no maxima are found"""
+    """Test that knee is None when no maxima are found"""
     x = range(10)
     y = [1] * len(x)
-    with pytest.warns(RuntimeWarning):
-        kl = KneeLocator(x, y)
+    kl = KneeLocator(x, y)
+    assert kl.knee is None
+
 
 
 def test_plot_knee_normalized():
