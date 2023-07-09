@@ -95,13 +95,13 @@ class KneeLocator(object):
     :vartype y_difference_minima: numpy array
     :ivar Tmx: The y values that correspond to the thresholds on the difference curve for determining the knee point.
     :vartype Tmx: numpy array
-    :ivar knee: The x value of the knee point.
+    :ivar knee: The x value of the knee point. None if no knee/elbow was detected.
     :vartype knee: float
-    :ivar knee_y: The y value of the knee point.
+    :ivar knee_y: The y value of the knee point. None if no knee/elbow was detected
     :vartype knee_y: float
-    :ivar norm_knee: The normalized x value of the knee point.
+    :ivar norm_knee: The normalized x value of the knee point. None if no knee/elbow was detected
     :vartype norm_knee: float
-    :ivar norm_knee_y: The normalized y value of the knee point.
+    :ivar norm_knee_y: The normalized y value of the knee point. None if no knee/elbow was detected
     :vartype norm_knee_y: float
     :ivar all_knees: The x values of all the identified knee points.
     :vartype all_knees: set
@@ -111,13 +111,13 @@ class KneeLocator(object):
     :vartype all_norm_knees: set
     :ivar all_norm_knees_y: The normalized y values of all the identified knee points.
     :vartype all_norm_knees: set
-    :ivar elbow: The x value of the elbow point (elbow and knee are interchangeable).
+    :ivar elbow: The x value of the elbow point (elbow and knee are interchangeable). None if no knee/elbow was detected
     :vartype elbow: float
-    :ivar elbow_y: The y value of the knee point (elbow and knee are interchangeable).
+    :ivar elbow_y: The y value of the knee point (elbow and knee are interchangeable). None if no knee/elbow was detected
     :vartype elbow_y: float
-    :ivar norm_elbow: The normalized x value of the knee point (elbow and knee are interchangeable).
+    :ivar norm_elbow: The normalized x value of the knee point (elbow and knee are interchangeable). None if no knee/elbow was detected
     :vartype norm_knee: float
-    :ivar norm_elbow_y: The normalized y value of the knee point (elbow and knee are interchangeable).
+    :ivar norm_elbow_y: The normalized y value of the knee point (elbow and knee are interchangeable). None if no knee/elbow was detected
     :vartype norm_elbow_y: float
     :ivar all_elbows: The x values of all the identified knee points (elbow and knee are interchangeable).
     :vartype all_elbows: set
@@ -311,7 +311,7 @@ class KneeLocator(object):
                     return knee, norm_knee
 
         if self.all_knees == set():
-            warnings.warn("No knee/elbow found")
+            # No knee was found
             return None, None
 
         return knee, norm_knee
