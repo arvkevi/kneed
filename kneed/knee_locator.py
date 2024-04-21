@@ -1,7 +1,6 @@
 import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
-import warnings
 from typing import Tuple, Optional, Iterable
 
 VALID_CURVE = ["convex", "concave"]
@@ -11,9 +10,12 @@ try:
     import matplotlib.pyplot as plt
 except ImportError:
     _has_matplotlib = False
-    _matplotlib_not_found_err = ModuleNotFoundError("This function needs Matplotlib to be executed. Please run command `pip install kneed[plot]` ")
+    _matplotlib_not_found_err = ModuleNotFoundError(
+        "This function needs Matplotlib to be executed. Please run command `pip install kneed[plot]` "
+    )
 else:
     _has_matplotlib = True
+
 
 class KneeLocator(object):
     """
@@ -24,7 +26,7 @@ class KneeLocator(object):
     :type x: 1D array of shape (`number_of_y_values`,) or list
     :param y: y values, must be the same length as x.
     :type y: 1D array of shape (`number_of_y_values`,) or list
-    :param S: Sensitivity, original paper suggests default of 1.0
+    :param S: Sensitivity, the number of minimum number of data points below the local distance maximum before calling a knee. The original paper suggests default of 1.0
     :type S: float
     :param curve: If 'concave', algorithm will detect knees. If 'convex', it
         will detect elbows.
@@ -37,6 +39,93 @@ class KneeLocator(object):
     :type online: bool
     :param polynomial_degree: The degree of the fitting polynomial. Only used when interp_method="polynomial". This argument is passed to numpy polyfit `deg` parameter.
     :type polynomial_degree: int
+    :ivar x: x values.
+    :vartype x: array-like
+    :ivar y: y values.
+    :vartype y: array-like
+    :ivar S: Sensitivity, original paper suggests default of 1.0
+    :vartype S: integer
+    :ivar curve: If 'concave', algorithm will detect knees. If 'convex', it
+        will detect elbows.
+    :vartype curve: str
+    :ivar direction: one of {"increasing", "decreasing"}
+    :vartype direction: str
+    :ivar interp_method: one of {"interp1d", "polynomial"}
+    :vartype interp_method: str
+    :ivar online: kneed will correct old knee points if True, will return first knee if False
+    :vartype online: str
+    :ivar polynomial_degree: The degree of the fitting polynomial. Only used when interp_method="polynomial". This argument is passed to numpy polyfit `deg` parameter.
+    :vartype polynomial_degree: int
+    :ivar N: The number of `x` values in the
+    :vartype N: integer
+    :ivar all_knees: A set containing all the x values of the identified knee points.
+    :vartype all_knees: set
+    :ivar all_norm_knees: A set containing all the normalized x values of the identified knee points.
+    :vartype all_norm_knees: set
+    :ivar all_knees_y: A list containing all the y values of the identified knee points.
+    :vartype all_knees_y: list
+    :ivar all_norm_knees_y: A list containing all the normalized y values of the identified knee points.
+    :vartype all_norm_knees_y: list
+    :ivar Ds_y: The y values from the fitted spline.
+    :vartype Ds_y: numpy array
+    :ivar x_normalized: The normalized x values.
+    :vartype x_normalized: numpy array
+    :ivar y_normalized: The normalized y values.
+    :vartype y_normalized: numpy array
+    :ivar x_difference: The x values of the difference curve.
+    :vartype x_difference: numpy array
+    :ivar y_difference: The y values of the difference curve.
+    :vartype y_difference: numpy array
+    :ivar maxima_indices: The indices of each of the maxima on the difference curve.
+    :vartype maxima_indices: numpy array
+    :ivar maxima_indices: The indices of each of the maxima on the difference curve.
+    :vartype maxima_indices: numpy array
+    :ivar x_difference_maxima: The x values from the difference curve where the local maxima are located.
+    :vartype x_difference_maxima: numpy array
+    :ivar y_difference_maxima: The y values from the difference curve where the local maxima are located.
+    :vartype y_difference_maxima: numpy array
+    :ivar minima_indices: The indices of each of the minima on the difference curve.
+    :vartype minima_indices: numpy array
+    :ivar minima_indices: The indices of each of the minima on the difference curve.
+    :vartype maxima_indices: numpy array
+    :ivar x_difference_minima: The x values from the difference curve where the local minima are located.
+    :vartype x_difference_minima: numpy array
+    :ivar y_difference_minima: The y values from the difference curve where the local minima are located.
+    :vartype y_difference_minima: numpy array
+    :ivar Tmx: The y values that correspond to the thresholds on the difference curve for determining the knee point.
+    :vartype Tmx: numpy array
+    :ivar knee: The x value of the knee point. None if no knee/elbow was detected.
+    :vartype knee: float
+    :ivar knee_y: The y value of the knee point. None if no knee/elbow was detected
+    :vartype knee_y: float
+    :ivar norm_knee: The normalized x value of the knee point. None if no knee/elbow was detected
+    :vartype norm_knee: float
+    :ivar norm_knee_y: The normalized y value of the knee point. None if no knee/elbow was detected
+    :vartype norm_knee_y: float
+    :ivar all_knees: The x values of all the identified knee points.
+    :vartype all_knees: set
+    :ivar all_knees_y: The y values of all the identified knee points.
+    :vartype all_knees: set
+    :ivar all_norm_knees: The normalized x values of all the identified knee points.
+    :vartype all_norm_knees: set
+    :ivar all_norm_knees_y: The normalized y values of all the identified knee points.
+    :vartype all_norm_knees: set
+    :ivar elbow: The x value of the elbow point (elbow and knee are interchangeable). None if no knee/elbow was detected
+    :vartype elbow: float
+    :ivar elbow_y: The y value of the knee point (elbow and knee are interchangeable). None if no knee/elbow was detected
+    :vartype elbow_y: float
+    :ivar norm_elbow: The normalized x value of the knee point (elbow and knee are interchangeable). None if no knee/elbow was detected
+    :vartype norm_knee: float
+    :ivar norm_elbow_y: The normalized y value of the knee point (elbow and knee are interchangeable). None if no knee/elbow was detected
+    :vartype norm_elbow_y: float
+    :ivar all_elbows: The x values of all the identified knee points (elbow and knee are interchangeable).
+    :vartype all_elbows: set
+    :ivar all_elbows_y: The y values of all the identified knee points (elbow and knee are interchangeable).
+    :vartype all_elbows: set
+    :ivar all_norm_elbows: The normalized x values of all the identified knee points (elbow and knee are interchangeable).
+    :vartype all_norm_elbows: set
+    :ivar all_norm_elbows_y: The normalized y values of all the identified knee points (elbow and knee are interchangeable).
+    :vartype all_norm_elbows: set
     """
 
     def __init__(
@@ -50,95 +139,6 @@ class KneeLocator(object):
         online: bool = False,
         polynomial_degree: int = 7,
     ):
-        """
-        :ivar x: x values.
-        :vartype x: array-like
-        :ivar y: y values.
-        :vartype y: array-like
-        :ivar S: Sensitivity, original paper suggests default of 1.0
-        :vartype S: integer
-        :ivar curve: If 'concave', algorithm will detect knees. If 'convex', it
-            will detect elbows.
-        :vartype curve: str
-        :ivar direction: one of {"increasing", "decreasing"}
-        :vartype direction: str
-        :ivar interp_method: one of {"interp1d", "polynomial"}
-        :vartype interp_method: str
-        :ivar online: kneed will correct old knee points if True, will return first knee if False
-        :vartype online: str
-        :ivar polynomial_degree: The degree of the fitting polynomial. Only used when interp_method="polynomial". This argument is passed to numpy polyfit `deg` parameter.
-        :vartype polynomial_degree: int
-        :ivar N: The number of `x` values in the
-        :vartype N: integer
-        :ivar all_knees: A set containing all the x values of the identified knee points.
-        :vartype all_knees: set
-        :ivar all_norm_knees: A set containing all the normalized x values of the identified knee points.
-        :vartype all_norm_knees: set
-        :ivar all_knees_y: A list containing all the y values of the identified knee points.
-        :vartype all_knees_y: list
-        :ivar all_norm_knees_y: A list containing all the normalized y values of the identified knee points.
-        :vartype all_norm_knees_y: list
-        :ivar Ds_y: The y values from the fitted spline.
-        :vartype Ds_y: numpy array
-        :ivar x_normalized: The normalized x values.
-        :vartype x_normalized: numpy array
-        :ivar y_normalized: The normalized y values.
-        :vartype y_normalized: numpy array
-        :ivar x_difference: The x values of the difference curve.
-        :vartype x_difference: numpy array
-        :ivar y_difference: The y values of the difference curve.
-        :vartype y_difference: numpy array
-        :ivar maxima_indices: The indices of each of the maxima on the difference curve.
-        :vartype maxima_indices: numpy array
-        :ivar maxima_indices: The indices of each of the maxima on the difference curve.
-        :vartype maxima_indices: numpy array
-        :ivar x_difference_maxima: The x values from the difference curve where the local maxima are located.
-        :vartype x_difference_maxima: numpy array
-        :ivar y_difference_maxima: The y values from the difference curve where the local maxima are located.
-        :vartype y_difference_maxima: numpy array
-        :ivar minima_indices: The indices of each of the minima on the difference curve.
-        :vartype minima_indices: numpy array
-        :ivar minima_indices: The indices of each of the minima on the difference curve.
-        :vartype maxima_indices: numpy array
-        :ivar x_difference_minima: The x values from the difference curve where the local minima are located.
-        :vartype x_difference_minima: numpy array
-        :ivar y_difference_minima: The y values from the difference curve where the local minima are located.
-        :vartype y_difference_minima: numpy array
-        :ivar Tmx: The y values that correspond to the thresholds on the difference curve for determining the knee point.
-        :vartype Tmx: numpy array
-        :ivar knee: The x value of the knee point.
-        :vartype knee: float
-        :ivar knee_y: The y value of the knee point.
-        :vartype knee_y: float
-        :ivar norm_knee: The normalized x value of the knee point.
-        :vartype norm_knee: float
-        :ivar norm_knee_y: The normalized y value of the knee point.
-        :vartype norm_knee_y: float
-        :ivar all_knees: The x values of all the identified knee points.
-        :vartype all_knees: set
-        :ivar all_knees_y: The y values of all the identified knee points.
-        :vartype all_knees: set
-        :ivar all_norm_knees: The normalized x values of all the identified knee points.
-        :vartype all_norm_knees: set
-        :ivar all_norm_knees_y: The normalized y values of all the identified knee points.
-        :vartype all_norm_knees: set
-        :ivar elbow: The x value of the elbow point (elbow and knee are interchangeable).
-        :vartype elbow: float
-        :ivar elbow_y: The y value of the knee point (elbow and knee are interchangeable).
-        :vartype elbow_y: float
-        :ivar norm_elbow: The normalized x value of the knee point (elbow and knee are interchangeable).
-        :vartype norm_knee: float
-        :ivar norm_elbow_y: The normalized y value of the knee point (elbow and knee are interchangeable).
-        :vartype norm_elbow_y: float
-        :ivar all_elbows: The x values of all the identified knee points (elbow and knee are interchangeable).
-        :vartype all_elbows: set
-        :ivar all_elbows_y: The y values of all the identified knee points (elbow and knee are interchangeable).
-        :vartype all_elbows: set
-        :ivar all_norm_elbows: The normalized x values of all the identified knee points (elbow and knee are interchangeable).
-        :vartype all_norm_elbows: set
-        :ivar all_norm_elbowss_y: The normalized y values of all the identified knee points (elbow and knee are interchangeable).
-        :vartype all_norm_elbows: set
-        """
         # Step 0: Raw Input
         self.x = np.array(x)
         self.y = np.array(y)
@@ -248,16 +248,15 @@ class KneeLocator(object):
          
         return x
     
-    def find_knee(self,):
+    def find_knee(
+        self,
+    ):
         """This function is called when KneeLocator is instantiated. It identifies the knee value and sets the instance attributes."""
         if not self.maxima_indices.size:
-            warnings.warn(
-                "No local maxima found in the difference curve\n"
-                "The line is probably not polynomial, try plotting\n"
-                "the difference curve with plt.plot(knee.x_difference, knee.y_difference)\n"
-                "Also check that you aren't mistakenly setting the curve argument",
-                RuntimeWarning,
-            )
+            # No local maxima found in the difference curve
+            # The line is probably not polynomial, try plotting
+            # the difference curve with plt.plot(knee.x_difference, knee.y_difference)
+            # Also check that you aren't mistakenly setting the curve argument
             return None, None
         # placeholder for which threshold region i is located in.
         maxima_threshold_index = 0
@@ -318,12 +317,18 @@ class KneeLocator(object):
                     return knee, norm_knee
 
         if self.all_knees == set():
-            warnings.warn("No knee/elbow found")
+            # No knee was found
             return None, None
 
         return knee, norm_knee
 
-    def plot_knee_normalized(self, figsize: Optional[Tuple[int, int]] = None, title: str = "Normalized Knee Point", xlabel: Optional[str] = None, ylabel: Optional[str] = None):
+    def plot_knee_normalized(
+        self,
+        figsize: Optional[Tuple[int, int]] = None,
+        title: str = "Normalized Knee Point",
+        xlabel: Optional[str] = None,
+        ylabel: Optional[str] = None,
+    ):
         """Plot the normalized curve, the difference curve (x_difference, y_normalized) and the knee, if it exists.
 
         :param figsize: Optional[Tuple[int, int]
@@ -366,7 +371,13 @@ class KneeLocator(object):
         )
         plt.legend(loc="best")
 
-    def plot_knee(self, figsize: Optional[Tuple[int, int]] = None, title: str = "Knee Point", xlabel: Optional[str] = None, ylabel: Optional[str] = None):
+    def plot_knee(
+        self,
+        figsize: Optional[Tuple[int, int]] = None,
+        title: str = "Knee Point",
+        xlabel: Optional[str] = None,
+        ylabel: Optional[str] = None,
+    ):
         """
         Plot the curve and the knee, if it exists
 
