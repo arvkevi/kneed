@@ -35,9 +35,10 @@ jobs:
           pip uninstall -y matplotlib
           pytest --cov=kneed --cov-report=xml:coverage2.xml tests/test_no_matplotlib.py
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           env_vars: OS,PYTHON
+          token: ${{ secrets.CODECOV_TOKEN }} # required
           fail_ci_if_error: true
           flags: unittests
           name: codecov-umbrella
