@@ -110,9 +110,9 @@ Any `S`>200 will result in a knee at 482 (0.48, normalized) in the plot above.
 online
 ------
 
-The knee point can be corrected if the parameter online is `True` (default). This mode will step through each element
+The knee point can be corrected if the parameter online is `True`. This mode will step through each element
 in x.
-In contrast, if online is False, kneed will run in offline mode and return the first knee point identified.
+In contrast, if online is `False` (default), kneed will run in offline mode and return the first knee point identified.
 When `online=False` the first knee point identified is returned regardless of whether it's the local maxima on the
 difference curve or the global maxima.
 So the algorithm stops early. When `online=True`, kneed runs in online mode and "corrects" itself by continuing to

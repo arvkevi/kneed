@@ -6,7 +6,7 @@ I have tried to follow the `Kneedle` algorithm as best as I could interpret from
 but the source code is far from perfect and could benefit from improvements.
 
 - Submit a bug report or feature request on [GitHub Issues](https://github.com/arvkevi/kneed/issues).
-- Contribute a Jupyter notebook to [notebooks](https://github.com/arvkevi/kneed/tree/master/notebooks).
+- Contribute a Jupyter notebook to [notebooks](https://github.com/arvkevi/kneed/tree/main/notebooks).
 - Documenting applications where `kneed` could be useful.
 - Code refactors -- the code was refactored in `0.4.0` to be more human-readable. However I think the code could still be greatly improved
 by breaking the `KneeLocator` class into a collection of methods. This would make the algorithm easier to unittest.
@@ -55,18 +55,11 @@ Once forked, use the following steps to get your development environment set up 
 
 3. Install dependencies.
 
-    Kneed's dependencies are in the `requirements.txt` document at the root of the repository. Open this file and uncomment the dependencies that are for development only. Then install the dependencies with `pip`:
+    Kneed's main dependencies are in the `requirements.txt` document at the root of the repository, however you will later also need to install testing dependencies.
+    Install them all with `pip`:
 
     ```
-    $ pip install -r requirements.txt
-    ```
-
-    Note that there are dependencies required for testing, you can simply install them with `pip`. For example to install
-    the additional dependencies for building the documentation or to run the
-    test suite, use the `requirements.txt` files in those directories:
-
-    ```
-    $ pip install -r tests/requirements.txt
+    $ pip install -e .[testing]
     ```
 
 At this point you're ready to get started writing code!

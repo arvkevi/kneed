@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kneed"
+dynamic = ["version"]
+description = "Knee-point detection in Python"
+readme = "README.md"
+license-files = { paths = ["LICENSE"] }
+requires-python = ">=3.5"
+authors = [
+    { name = "Kevin Arvai", email = "arvkevi@gmail.com" },
+]
+keywords = [
+    "knee-detection",
+    "system",
+    "elbow-method",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "numpy>=1.14.2",
+    "scipy>=1.0.0",
+]
+
+[project.optional-dependencies]
+plot = [
+    "matplotlib>=2.2.5",
+]
+testing = [
+    "matplotlib>=2.2.5",
+    "pytest-cov>=3.0.0",
+    "pytest>=5.0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/arvkevi/kneed"
+Documentation = "https://kneed.readthedocs.io/en/latest/"
+
+[tool.hatch.version]
+path = "kneed/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/kneed",
+    "/tests",
+    "/LICENSE",
+    "/README.md",
+]
+
+[tool.hatch.envs.test_no_mpl]
+dependencies = [
+  "pytest>=5.0.1",
+  "pytest-cov>=3.0.0",
+  "scipy",
+  "numpy",
+]
+skip-install = false
+
+[tool.hatch.envs.test]
+template = "test_no_mpl"
+extra-dependencies = [
+  "matplotlib>=2.2.5",
+]
+skip-install = false
+
+[tool.hatch.envs.test_no_mpl.scripts]
+run-coverage = "pytest --cov=kneed --cov-report=xml:coverage2.xml tests/test_no_matplotlib.py"
+run = "run-coverage --no-cov"
+
+[tool.hatch.envs.test.scripts]
+run-coverage = "pytest --cov=kneed --cov-report=xml:coverage1.xml tests/test_sample.py"
+run = "run-coverage --no-cov"
