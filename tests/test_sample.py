@@ -560,3 +560,39 @@ def test_find_shape():
     direction, curve = find_shape(x, y)
     assert direction == "increasing"
     assert curve == "convex"
+
+
+def test_missing_curve():
+    """Test that find_shape is used when curve is not provided"""
+    x, y = dg.concave_increasing()
+    kl = KneeLocator(x, y)
+
+    assert kl.curve is not None
+    assert kl.curve == "concave"
+
+
+def test_missing_direction():
+    """Test that find_shape is used when direction is not provided"""
+    x, y = dg.concave_increasing()
+    kl = KneeLocator(x, y)
+
+    assert kl.direction is not None
+    assert kl.direction == "increasing"
+
+
+def test_provided_curve():
+    """Test that find_shape is not used when curve is provided"""
+    x, y = dg.concave_increasing()
+    kl = KneeLocator(x, y, curve="convex")
+
+    assert kl.curve is not None
+    assert kl.curve == "convex"
+
+
+def test_provided_direction():
+    """Test that find_shape is not used when direction is provided"""
+    x, y = dg.concave_increasing()
+    kl = KneeLocator(x, y, direction="decreasing")
+
+    assert kl.direction is not None
+    assert kl.direction == "decreasing"
