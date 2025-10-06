@@ -252,6 +252,8 @@ class KneeLocator(object):
         maxima_threshold_index = 0
         minima_threshold_index = 0
         traversed_maxima = False
+        # State flag to control knee detection after local minima
+        detection_active = True
         # traverse the difference curve
         for i, x in enumerate(self.x_difference):
             # skip points on the curve before the the first local maxima
@@ -269,12 +271,16 @@ class KneeLocator(object):
                 threshold = self.Tmx[maxima_threshold_index]
                 threshold_index = i
                 maxima_threshold_index += 1
+                # Reactivate detection when we reach a local maximum
+                detection_active = True
             # values in difference curve are at or after a local minimum
             if (self.minima_indices == i).any():
                 threshold = 0.0
                 minima_threshold_index += 1
+                # Deactivate detection after a local minimum until next local maximum
+                detection_active = False
 
-            if self.y_difference[j] < threshold:
+            if detection_active and self.y_difference[j] < threshold:
                 if self.curve == "convex":
                     if self.direction == "decreasing":
                         knee = self.x[threshold_index]
