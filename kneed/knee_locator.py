@@ -2,6 +2,7 @@ import numpy as np
 from scipy import interpolate
 from scipy.signal import argrelextrema
 from typing import Tuple, Optional, Iterable
+from shape_detector import find_shape
 
 VALID_CURVE = ["convex", "concave"]
 VALID_DIRECTION = ["increasing", "decreasing"]
@@ -30,9 +31,9 @@ class KneeLocator(object):
     :type S: float
     :param curve: If 'concave', algorithm will detect knees. If 'convex', it
         will detect elbows.
-    :type curve: str
+    :type curve: Optional[str]
     :param direction: one of {"increasing", "decreasing"}
-    :type direction: str
+    :type direction: Optional[str]
     :param interp_method: one of {"interp1d", "polynomial"}
     :type interp_method: str
     :param online: kneed will correct old knee points if True, will return first knee if False
@@ -133,8 +134,8 @@ class KneeLocator(object):
         x: Iterable[float],
         y: Iterable[float],
         S: float = 1.0,
-        curve: str = "concave",
-        direction: str = "increasing",
+        curve: Optional[str] = None,
+        direction: Optional[str] = None,
         interp_method: str = "interp1d",
         online: bool = False,
         polynomial_degree: int = 7,
@@ -152,6 +153,16 @@ class KneeLocator(object):
         self.all_norm_knees_y = []
         self.online = online
         self.polynomial_degree = polynomial_degree
+
+        # Use find_shape if it's not provided
+        if self.curve is None or self.direction is None:
+            direction, curve = find_shape(self.x, self.y)
+
+            if self.curve is None:
+                self.curve = curve
+
+            if self.direction is None:
+                self.direction = direction
 
         # I'm implementing Look Before You Leap (LBYL) validation for direction
         # and curve arguments. This is not preferred in Python. The motivation
