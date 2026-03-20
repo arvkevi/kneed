@@ -39,8 +39,8 @@ nosetests.xml
 output/*.html
 output/*/index.html
 
-# Sphinx
-docs/_build
+# MkDocs
+site/
 
 # Cookiecutter
 output/
