@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.6 (2026-03-20)
+
+- Fixed knee detection to pause after local minima per the Kneedle algorithm specification
+- Migrated documentation from Sphinx to MkDocs Material with dark mode and improved search
+- Added new documentation: getting started guide, curve types reference, multi-knee detection, `find_shape()` guide, troubleshooting, and real-world examples (K-means, PCA)
+- Converted docstrings from Sphinx to NumPy style and fixed type errors (`online` was documented as `str` instead of `bool`, `S` as `integer` instead of `float`)
+- Updated Python support: dropped 3.5-3.7, added 3.12 to CI matrix
+- Updated project classifier from "Alpha" to "Production/Stable"
+- Added changelog to documentation
+
 ## 0.8.5 (2023-07-08)
 
 - Removed all warnings when no knees are found — `knee` simply returns `None`
