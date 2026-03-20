@@ -2,10 +2,23 @@ import numpy as np
 
 
 def find_shape(x, y):
-    """
-    Detect the direction and curve type of the line.
+    """Detect the direction and curve type of the data.
 
-    :return: direction("increasing" or "decreasing") and curve type("concave" or "convex")
+    Fits a first-degree polynomial to the data and uses the coefficients
+    to determine if the curve is increasing/decreasing and concave/convex.
+
+    Parameters
+    ----------
+    x : array-like
+        x values.
+    y : array-like
+        y values.
+
+    Returns
+    -------
+    tuple of str
+        ``(direction, curve)`` where direction is ``"increasing"`` or
+        ``"decreasing"`` and curve is ``"concave"`` or ``"convex"``.
     """
 
     p = np.polyfit(x, y, deg=1)

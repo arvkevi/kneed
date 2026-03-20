@@ -5,7 +5,7 @@ authors:
   given-names: "Kevin"
   orcid: "https://orcid.org/0000-0001-8751-8918"
 title: "kneed"
-version: 0.7.0
+version: 0.8.5
 doi: 10.5281/zenodo.6496267
-date-released: 2020-08-12
+date-released: 2023-07-08
 url: "https://github.com/arvkevi/kneed"

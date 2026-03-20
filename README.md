@@ -1,50 +1,85 @@
 # kneed
- Knee-point detection in Python
 
-[![Downloads](https://pepy.tech/badge/kneed)](https://pepy.tech/project/kneed) [![Downloads](https://pepy.tech/badge/kneed/week)](https://pepy.tech/project/kneed) ![Dependents](https://badgen.net/github/dependents-repo/arvkevi/kneed/?icon=github) [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/arvkevi/ikneed/main/ikneed.py) [![codecov](https://codecov.io/gh/arvkevi/kneed/branch/main/graph/badge.svg)](https://codecov.io/gh/arvkevi/kneed)[![DOI](https://zenodo.org/badge/113799037.svg)](https://zenodo.org/badge/latestdoi/113799037)
+Knee-point detection in Python
 
+[![PyPI version](https://img.shields.io/pypi/v/kneed.svg)](https://pypi.org/project/kneed/)
+[![Downloads](https://pepy.tech/badge/kneed)](https://pepy.tech/project/kneed)
+[![Downloads](https://pepy.tech/badge/kneed/week)](https://pepy.tech/project/kneed)
+![Dependents](https://badgen.net/github/dependents-repo/arvkevi/kneed/?icon=github)
+[![codecov](https://codecov.io/gh/arvkevi/kneed/branch/main/graph/badge.svg)](https://codecov.io/gh/arvkevi/kneed)
+[![DOI](https://zenodo.org/badge/113799037.svg)](https://zenodo.org/badge/latestdoi/113799037)
 
-This repository is an attempt to implement the kneedle algorithm, published [here](https://www1.icsi.berkeley.edu/~barath/papers/kneedle-simplex11.pdf). Given a set of `x` and `y` values, `kneed` will return the knee point of the function. The knee point is the point of maximum curvature.
+A Python library for detecting knee (elbow) points in curves using the [Kneedle algorithm](https://www1.icsi.berkeley.edu/~barath/papers/kneedle-simplex11.pdf). Given a set of `x` and `y` values, `kneed` returns the point of maximum curvature.
 
-![](https://raw.githubusercontent.com/arvkevi/kneed/main/images/functions_args_summary.png)
+![Summary of curve and direction arguments](https://raw.githubusercontent.com/arvkevi/kneed/main/images/functions_args_summary.png)
 
-## Table of contents
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Input Data](#input-data)
-  - [Find Knee](#find-knee)
-  - [Visualize](#visualize)
-- [Documentation](#documentation)
-- [Interactive](#interactive)
-- [Contributing](#contributing)
-- [Citation](#citation)
+## Features
 
-## Installation  
-`kneed` has been tested with Python 3.7, 3.8, 3.9, and 3.10.
+- Detect knee/elbow points in concave or convex curves
+- Support for increasing and decreasing functions
+- Automatic curve shape detection with `find_shape()`
+- Multiple knee detection via online mode (`all_knees` / `all_elbows`)
+- Tunable sensitivity parameter (`S`)
+- Multiple interpolation methods (`interp1d`, `polynomial`)
+- Built-in plotting for quick visualizations
 
-**anaconda**
+## Installation
+
+`kneed` has been tested with Python 3.8, 3.9, 3.10, 3.11, and 3.12.
+
+### anaconda
+
 ```bash
-$ conda install -c conda-forge kneed
+conda install -c conda-forge kneed
 ```
 
-**pip**
+### pip
+
 ```bash
-$ pip install kneed # To install only knee-detection algorithm
-$ pip install kneed[plot] # To also install plotting functions for quick visualizations
+pip install kneed              # knee-detection only
+pip install kneed[plot]        # also install matplotlib for visualizations
 ```
 
-**Clone from GitHub**
+### Clone from GitHub
+
 ```bash
-$ git clone https://github.com/arvkevi/kneed.git && cd kneed
-$ pip install -e .
+git clone https://github.com/arvkevi/kneed.git && cd kneed
+pip install -e .
+```
+
+## Quick Start
+
+```python
+from kneed import KneeLocator, DataGenerator
+
+# Generate sample data
+x, y = DataGenerator.figure2()
+
+# Find the knee point
+kl = KneeLocator(x, y, curve="concave", direction="increasing")
+print(kl.knee)       # 0.222
+print(kl.knee_y)     # 1.897
+```
+
+If you're unsure about the curve type and direction, use `find_shape()` to auto-detect:
+
+```python
+from kneed import find_shape
+
+direction, curve = find_shape(x, y)
+kl = KneeLocator(x, y, curve=curve, direction=direction)
 ```
 
 ## Usage
-These steps introduce how to use `kneed` by reproducing Figure 2 from the manuscript.
+
+These steps reproduce Figure 2 from the original Kneedle manuscript.
 
 ### Input Data
-The `DataGenerator` class is only included as a utility to generate sample datasets. 
->  Note: `x` and `y` must be equal length arrays.
+
+The `DataGenerator` class is a utility to generate sample datasets.
+
+> Note: `x` and `y` must be equal length arrays.
+
 ```python
 from kneed import DataGenerator, KneeLocator
 
@@ -57,9 +92,10 @@ print([round(i, 3) for i in y])
 [-5.0, 0.263, 1.897, 2.692, 3.163, 3.475, 3.696, 3.861, 3.989, 4.091]
 ```
 
-### Find Knee  
-The knee (or elbow) point is calculated simply by instantiating the `KneeLocator` class with `x`, `y` and the appropriate `curve` and `direction`.  
-Here, `kneedle.knee` and/or `kneedle.elbow` store the point of maximum curvature.
+### Find Knee
+
+The knee (or elbow) point is calculated by instantiating the `KneeLocator` class with `x`, `y` and the appropriate `curve` and `direction`.
+Here, `kneedle.knee` and `kneedle.elbow` store the point of maximum curvature.
 
 ```python
 kneedle = KneeLocator(x, y, S=1.0, curve="concave", direction="increasing")
@@ -79,50 +115,54 @@ print(round(kneedle.knee_y, 3))
 ```
 
 ### Visualize
-The `KneeLocator` class also has two plotting functions for quick visualizations.
+
+The `KneeLocator` class has two plotting functions for quick visualizations.
 **Note that all (x, y) are transformed for the normalized plots**
 ```python
 # Normalized data, normalized knee, and normalized distance curve.
 kneedle.plot_knee_normalized()
 ```
 
-![](https://raw.githubusercontent.com/arvkevi/kneed/main/images/figure2.knee.png)
+![Normalized knee point](https://raw.githubusercontent.com/arvkevi/kneed/main/images/figure2.knee.png)
 
 ```python
 # Raw data and knee.
 kneedle.plot_knee()
 ```
 
-![](https://raw.githubusercontent.com/arvkevi/kneed/main/images/figure2.knee.raw.png)
+![Raw knee point](https://raw.githubusercontent.com/arvkevi/kneed/main/images/figure2.knee.raw.png)
 
 ## Documentation
-Documentation of the parameters and a full API reference can be found [here](https://kneed.readthedocs.io/).
+
+Full documentation including parameter tuning guides, real-world examples, and API reference is available at [kneed.readthedocs.io](https://kneed.readthedocs.io/).
 
 ## Interactive
-An interactive streamlit app was developed to help users explore the effect of tuning the parameters.
-There are two sites where you can test out kneed by copy-pasting your own data:
-1. https://share.streamlit.io/arvkevi/ikneed/main/ikneed.py
-2. https://ikneed.herokuapp.com/
 
-You can also run your own version -- head over to the [source code for ikneed](https://github.com/arvkevi/ikneed).
+An interactive Streamlit app is available to explore the effect of tuning parameters:
 
-![ikneed](images/ikneed.gif)
+[share.streamlit.io/arvkevi/ikneed](https://share.streamlit.io/arvkevi/ikneed/main/ikneed.py)
+
+You can also run your own version — head over to the [source code for ikneed](https://github.com/arvkevi/ikneed).
+
+![ikneed](https://raw.githubusercontent.com/arvkevi/kneed/main/images/ikneed.gif)
 
 ## Contributing
 
-Contributions are welcome, please refer to [CONTRIBUTING](https://github.com/arvkevi/kneed/blob/main/CONTRIBUTING.md) 
-to learn more about how to contribute.                            
+Contributions are welcome, please refer to [CONTRIBUTING](https://github.com/arvkevi/kneed/blob/main/CONTRIBUTING.md)
+to learn more about how to contribute.
 
 ## Citation
 
-Finding a “Kneedle” in a Haystack:
-Detecting Knee Points in System Behavior
-Ville Satopa
-†
-, Jeannie Albrecht†
-, David Irwin‡
-, and Barath Raghavan§
-†Williams College, Williamstown, MA
-‡University of Massachusetts Amherst, Amherst, MA
-§
-International Computer Science Institute, Berkeley, CA
+If you use `kneed` in your research, please cite:
+
+> Satopa, V., Albrecht, J., Irwin, D., and Raghavan, B. (2011). "Finding a 'Kneedle' in a Haystack: Detecting Knee Points in System Behavior." *31st International Conference on Distributed Computing Systems Workshops*, pp. 166-171.
+
+```bibtex
+@inproceedings{satopa2011kneedle,
+  title={Finding a "Kneedle" in a Haystack: Detecting Knee Points in System Behavior},
+  author={Satopa, Ville and Albrecht, Jeannie and Irwin, David and Raghavan, Barath},
+  booktitle={31st International Conference on Distributed Computing Systems Workshops},
+  pages={166--171},
+  year={2011},
+}
+```

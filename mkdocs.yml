@@ -1,0 +1,67 @@
+site_name: kneed
+site_description: Knee-point detection in Python
+site_url: https://kneed.readthedocs.io/
+repo_url: https://github.com/arvkevi/kneed
+repo_name: arvkevi/kneed
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - content.code.copy
+    - navigation.sections
+    - navigation.expand
+    - search.highlight
+    - search.suggest
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - User Guide:
+    - Parameters: user-guide/parameters.md
+    - Curve Types: user-guide/curve-types.md
+    - Multi-Knee Detection: user-guide/multi-knee.md
+    - Auto-Detection with find_shape: user-guide/find-shape.md
+    - Troubleshooting: user-guide/troubleshooting.md
+  - Examples:
+    - K-Means Elbow Method: examples/kmeans-elbow.md
+    - PCA Component Selection: examples/pca-components.md
+    - Custom Data: examples/custom-data.md
+  - API Reference: api.md
+  - Changelog: changelog.md
+  - Contributing: contributing.md
