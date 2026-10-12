@@ -560,3 +560,44 @@ def test_find_shape():
     direction, curve = find_shape(x, y)
     assert direction == "increasing"
     assert curve == "convex"
+
+
+@pytest.mark.parametrize(
+    "data_generator, curve, direction, knee_index",
+    [
+        (dg.concave_increasing, "concave", "increasing", 2),
+        (dg.concave_decreasing, "concave", "decreasing", 7),
+        (dg.convex_increasing, "convex", "increasing", 7),
+        (dg.convex_decreasing, "convex", "decreasing", 2),
+    ],
+)
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
+@pytest.mark.parametrize("online", [False, True])
+def test_y_at_zero_knee(
+    data_generator, curve, direction, knee_index, interp_method, online
+):
+    x, y = data_generator()
+    control = KneeLocator(
+        x,
+        y,
+        curve=curve,
+        direction=direction,
+        interp_method=interp_method,
+        online=online,
+    )
+    kl = KneeLocator(
+        x - x[knee_index],
+        y,
+        curve=curve,
+        direction=direction,
+        interp_method=interp_method,
+        online=online,
+    )
+    assert kl.knee == 0
+    assert kl.elbow == 0
+    assert kl.knee_y == pytest.approx(y[knee_index])
+    assert kl.elbow_y == pytest.approx(control.elbow_y)
+    assert kl.norm_knee_y == pytest.approx(control.norm_knee_y)
+    assert kl.norm_elbow_y == pytest.approx(control.norm_elbow_y)
+    assert kl.all_knees_y == pytest.approx(control.all_knees_y)
+    assert kl.all_norm_knees_y == pytest.approx(control.all_norm_knees_y)
