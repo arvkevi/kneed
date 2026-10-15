@@ -233,7 +233,12 @@ class KneeLocator(object):
         numpy.ndarray
             The normalized array.
         """
-        return (a - min(a)) / (max(a) - min(a))
+        minimum, maximum = min(a), max(a)
+        if np.issubdtype(a.dtype, np.signedinteger):
+            if int(maximum) - int(minimum) > np.iinfo(a.dtype).max:
+                a = a.astype(float)
+                minimum, maximum = float(minimum), float(maximum)
+        return (a - minimum) / (maximum - minimum)
 
     @staticmethod
     def transform_y(y: Iterable[float], direction: str, curve: str) -> float:

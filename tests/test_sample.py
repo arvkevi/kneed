@@ -560,3 +560,70 @@ def test_find_shape():
     direction, curve = find_shape(x, y)
     assert direction == "increasing"
     assert curve == "convex"
+
+
+@pytest.mark.parametrize("online", [False, True])
+@pytest.mark.parametrize(
+    "dtype, scale",
+    [
+        (np.int8, 20),
+        (np.int16, 4000),
+        (np.int32, 400000000),
+        (np.int64, 1000000000000000000),
+    ],
+)
+def test_signed_integer_normalization_overflow(dtype, scale, online):
+    x = (np.arange(-5, 6, dtype=np.int64) * scale).astype(dtype)
+    y = np.array([0, 4, 7, 9, 10, 10.5, 10.8, 11, 11.1, 11.2, 11.3])
+    before_x, before_y = x.copy(), y.copy()
+    expected = KneeLocator(x.astype(float), y, online=online)
+
+    actual = KneeLocator(x, y, online=online)
+
+    np.testing.assert_allclose(actual.x_normalized, np.linspace(0, 1, len(x)))
+    assert actual.knee == expected.knee
+    assert actual.norm_knee == expected.norm_knee
+    np.testing.assert_array_equal(actual.Ds_y, expected.Ds_y)
+    np.testing.assert_array_equal(x, before_x)
+    np.testing.assert_array_equal(y, before_y)
+
+
+@pytest.mark.parametrize("online", [False, True])
+@pytest.mark.parametrize(
+    "dtype, start, step",
+    [
+        (np.int8, -5, 1),
+        (np.int16, -5, 1),
+        (np.int32, -5, 1),
+        (np.int64, -5, 1),
+        (np.uint8, 0, 20),
+        (np.float32, -100, 20),
+        (np.float64, -100, 20),
+    ],
+)
+def test_normalization_existing_numeric_inputs(dtype, start, step, online):
+    x = (np.arange(11) * step + start).astype(dtype)
+    y = np.array([0, 4, 7, 9, 10, 10.5, 10.8, 11, 11.1, 11.2, 11.3])
+    before = x.copy()
+    expected = KneeLocator(x.astype(float), y, online=online)
+
+    actual = KneeLocator(x, y, online=online)
+
+    np.testing.assert_allclose(actual.x_normalized, expected.x_normalized)
+    assert actual.knee == expected.knee
+    assert math.isclose(actual.norm_knee, expected.norm_knee, rel_tol=1e-6)
+    np.testing.assert_array_equal(x, before)
+
+
+def test_large_offset_integer_normalization_preserves_small_differences():
+    x = np.arange(11, dtype=np.int64) + (1 << 60)
+    before = x.copy()
+    y = [0, 4, 7, 9, 10, 10.5, 10.8, 11, 11.1, 11.2, 11.3]
+
+    # Existing interpolation rounds these coordinates; normalization must still
+    # retain their exact differences rather than converting all of x to float.
+    with pytest.warns(RuntimeWarning, match="invalid value encountered in divide"):
+        actual = KneeLocator(x, y)
+
+    np.testing.assert_allclose(actual.x_normalized, np.linspace(0, 1, len(x)))
+    np.testing.assert_array_equal(x, before)
