@@ -139,9 +139,9 @@ plt.legend()
 
 ## interp_method
 
-This parameter controls the interpolation method for fitting a spline to the input `x` and `y` data points. Valid arguments are `"interp1d"` and `"polynomial"`.
+This parameter controls whether `y` is smoothed before the knee is found. Valid arguments are `"interp1d"` and `"polynomial"`.
 
-If `interp_method="interp1d"`, then `x` and `y` will be fit using [scipy.interpolate.interp1d](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html).
+If `interp_method="interp1d"` (the default), `y` is used as given, with no smoothing. The name is historical: kneed used to evaluate a linear [scipy.interpolate.interp1d](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.interp1d.html) at the same `x` values, which returns `y` unchanged.
 
 ```python
 from kneed import KneeLocator

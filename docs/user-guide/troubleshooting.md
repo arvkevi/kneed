@@ -120,20 +120,6 @@ Key attributes for debugging:
 | `minima_indices` | Indices of local minima on the difference curve |
 | `Tmx` | Threshold values for each maximum |
 
-## scipy `interp1d` Deprecation Warning
-
-If you see a deprecation warning about `scipy.interpolate.interp1d`, you can suppress it or switch to polynomial interpolation:
-
-```python
-# Option 1: Use polynomial interpolation instead
-kl = KneeLocator(x, y, curve="concave", interp_method="polynomial")
-
-# Option 2: Suppress the warning
-import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning, module="scipy")
-kl = KneeLocator(x, y, curve="concave")
-```
-
 ## Plotting Errors
 
 If you get a `ModuleNotFoundError` when calling `plot_knee()` or `plot_knee_normalized()`, install matplotlib:
