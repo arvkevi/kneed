@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Fixed knee detection on unevenly spaced x for concave decreasing and convex increasing curves (#98, #176). Thanks to @vhu43 for the approach in #142.
+- Dropped Python 3.8 and 3.9; added 3.13, 3.14 and 3.15 to CI (#175)
+
 ## 0.8.6 (2026-03-20)
 
 - Fixed knee detection to pause after local minima per the Kneedle algorithm specification
