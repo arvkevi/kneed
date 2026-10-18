@@ -190,6 +190,10 @@ class KneeLocator(object):
         self.y_normalized = self.transform_y(
             self.y_normalized, self.direction, self.curve
         )
+        # flipping y by index only mirrors the curve on evenly spaced x;
+        # mirror x by value too (paper: x -> x_max - x), keeping ascending order
+        if (self.direction, self.curve) in (("decreasing", "concave"), ("increasing", "convex")):
+            self.x_normalized = np.flip(1 - self.x_normalized)
         # normalized difference curve
         self.y_difference = self.y_normalized - self.x_normalized
         self.x_difference = self.x_normalized.copy()

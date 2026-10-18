@@ -560,3 +560,24 @@ def test_find_shape():
     direction, curve = find_shape(x, y)
     assert direction == "increasing"
     assert curve == "convex"
+
+
+@pytest.mark.parametrize(
+    "curve, direction, flip_x, flip_y",
+    [
+        ("concave", "decreasing", True, False),
+        ("convex", "increasing", True, True),
+        ("convex", "decreasing", False, True),
+    ],
+)
+def test_uneven_x_mirrored(curve, direction, flip_x, flip_y):
+    """The same unevenly spaced points find the same knee in every orientation (#98)"""
+    x = np.linspace(0, 1, 30) ** 2
+    y = -1 / (x + 0.1) + 5
+    expected = KneeLocator(x, y, curve="concave", direction="increasing").knee
+    xs = 1 - x if flip_x else x
+    ys = -y if flip_y else y
+    order = np.argsort(xs)
+    kl = KneeLocator(xs[order], ys[order], curve=curve, direction=direction)
+    knee = 1 - kl.knee if flip_x else kl.knee
+    assert math.isclose(knee, expected)
