@@ -1,5 +1,4 @@
 import numpy as np
-from scipy import interpolate
 from scipy.signal import argrelextrema
 from typing import Tuple, Optional, Iterable
 
@@ -37,7 +36,8 @@ class KneeLocator(object):
     direction : str, default "increasing"
         One of ``{"increasing", "decreasing"}``.
     interp_method : str, default "interp1d"
-        One of ``{"interp1d", "polynomial"}``.
+        One of ``{"interp1d", "polynomial"}``. ``"interp1d"`` uses ``y`` as
+        given; ``"polynomial"`` smooths ``y`` with a polynomial fit.
     online : bool, default False
         If True, kneed will correct old knee points as it traverses the
         curve. If False, it returns the first knee found.
@@ -144,6 +144,8 @@ class KneeLocator(object):
         # Step 0: Raw Input
         self.x = np.array(x)
         self.y = np.array(y)
+        if len(self.x) != len(self.y):
+            raise ValueError("x and y must be the same length.")
         self.curve = curve
         self.direction = direction
         self.N = len(self.x)
@@ -168,10 +170,10 @@ class KneeLocator(object):
                 "Please check that the curve and direction arguments are valid."
             )
 
-        # Step 1: fit a smooth line
+        # Step 1: smooth the data. "interp1d" means no smoothing: a linear
+        # interpolant evaluated at its own x values returns y unchanged.
         if interp_method == "interp1d":
-            uspline = interpolate.interp1d(self.x, self.y)
-            self.Ds_y = uspline(self.x)
+            self.Ds_y = self.y.astype(float)
         elif interp_method == "polynomial":
             p = np.poly1d(np.polyfit(x, y, self.polynomial_degree))
             self.Ds_y = p(x)
