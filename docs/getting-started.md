@@ -2,7 +2,7 @@
 
 ## Installation
 
-`kneed` requires Python 3.8 or later.
+`kneed` requires Python 3.10 or later.
 
 === "pip"
 
