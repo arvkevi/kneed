@@ -37,16 +37,16 @@ When using online mode, all detected knee points are available via the `all_knee
 kl = KneeLocator(x, y, curve="convex", direction="decreasing", online=True)
 
 # x values of all detected knees
-print(kl.all_knees)        # set of x values
+print(kl.all_knees)        # list of x values
 print(kl.all_knees_y)      # list of corresponding y values
 
 # Normalized values
-print(kl.all_norm_knees)   # set of normalized x values
+print(kl.all_norm_knees)   # list of normalized x values
 print(kl.all_norm_knees_y) # list of normalized y values
 ```
 
 !!! note
-    The `all_knees` attribute is a `set`, so knee values are unique but unordered. The `all_knees_y` attribute is a `list` that preserves the order of detection.
+    `all_knees` and `all_knees_y` are lists in the order the knees were found, so `all_knees[i]` pairs with `all_knees_y[i]`. Each knee appears once.
 
 ## Elbow Aliases
 
