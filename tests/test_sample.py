@@ -289,6 +289,13 @@ def test_interp_method():
         kl = KneeLocator(x, y, interp_method="not_a_method")
 
 
+@pytest.mark.parametrize("interp_method", ["interp1d", "polynomial"])
+def test_x_y_length_mismatch(interp_method):
+    """Test that x and y must be the same length."""
+    with pytest.raises(ValueError, match="same length"):
+        KneeLocator(range(4), [1, 3, 5], interp_method=interp_method)
+
+
 def test_x_equals_y():
     """Test that knee is None when no maxima are found"""
     x = range(10)
