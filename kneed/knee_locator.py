@@ -104,9 +104,9 @@ class KneeLocator(object):
         The normalized x value of the knee point.
     norm_knee_y : float or None
         The normalized y value of the knee point.
-    all_knees : set
-        All the x values of the identified knee points.
-    all_norm_knees : set
+    all_knees : list
+        All the x values of the identified knee points, in the order they were found.
+    all_norm_knees : list
         All the normalized x values of the identified knee points.
     all_knees_y : list
         All the y values of the identified knee points.
@@ -150,8 +150,8 @@ class KneeLocator(object):
         self.direction = direction
         self.N = len(self.x)
         self.S = S
-        self.all_knees = set()
-        self.all_norm_knees = set()
+        self.all_knees = []
+        self.all_norm_knees = []
         self.all_knees_y = []
         self.all_norm_knees_y = []
         self.online = online
@@ -342,18 +342,16 @@ class KneeLocator(object):
                 y_at_knee = self.y[self.x == knee][0]
                 y_norm_at_knee = self.y_normalized[self.x_normalized == norm_knee][0]
                 if knee not in self.all_knees:
+                    self.all_knees.append(knee)
+                    self.all_norm_knees.append(norm_knee)
                     self.all_knees_y.append(y_at_knee)
                     self.all_norm_knees_y.append(y_norm_at_knee)
-
-                # now add the knee
-                self.all_knees.add(knee)
-                self.all_norm_knees.add(norm_knee)
 
                 # if detecting in offline mode, return the first knee found
                 if self.online is False:
                     return knee, norm_knee
 
-        if self.all_knees == set():
+        if not self.all_knees:
             # No knee was found
             return None, None
 

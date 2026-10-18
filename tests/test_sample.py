@@ -239,7 +239,9 @@ def test_flat_maxima():
 def test_all_knees():
     x, y = dg.bumpy()
     kl = KneeLocator(x, y, curve="convex", direction="decreasing", online=True)
-    assert np.isclose(sorted(kl.all_elbows), [26, 31, 41, 46, 53]).all()
+    assert kl.all_elbows == [26, 31, 41, 46, 53]
+    # all_knees lines up with all_knees_y (#161)
+    assert kl.all_elbows_y == [kl.y[kl.x == k][0] for k in kl.all_elbows]
     assert np.isclose(
         sorted(kl.all_norm_elbows),
         [

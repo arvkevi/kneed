@@ -5,6 +5,7 @@
 - Fixed knee detection on unevenly spaced x for concave decreasing and convex increasing curves (#98, #176). Thanks to @vhu43 for the approach in #142.
 - Dropped Python 3.8 and 3.9; added 3.13, 3.14 and 3.15 to CI (#175)
 - `interp_method="interp1d"` now uses `y` directly instead of calling `scipy.interpolate.interp1d`, which returned `y` unchanged. Results are identical.
+- `all_knees` and `all_norm_knees` (and their `elbow` aliases) are now lists in the order the knees were found, matching `all_knees_y`. They were sets, whose order didn't match (#161).
 
 ## 0.8.6 (2026-03-20)
 
