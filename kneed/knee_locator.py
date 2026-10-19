@@ -221,7 +221,7 @@ class KneeLocator(object):
 
         # Step 7: If we have a knee, extract data about it
         self.knee_y = self.norm_knee_y = None
-        if self.knee:
+        if self.knee is not None:
             self.knee_y = self.y[self.x == self.knee][0]
             self.norm_knee_y = self.y_normalized[self.x_normalized == self.norm_knee][0]
 
@@ -239,6 +239,7 @@ class KneeLocator(object):
         numpy.ndarray
             The normalized array.
         """
+        a = np.asarray(a, dtype=float)
         return (a - min(a)) / (max(a) - min(a))
 
     @staticmethod
