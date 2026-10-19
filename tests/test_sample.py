@@ -590,3 +590,24 @@ def test_uneven_x_mirrored(curve, direction, flip_x, flip_y):
     kl = KneeLocator(xs[order], ys[order], curve=curve, direction=direction)
     knee = 1 - kl.knee if flip_x else kl.knee
     assert math.isclose(knee, expected)
+
+
+@pytest.mark.parametrize("online", [True, False])
+def test_knee_at_zero(online):
+    """Test that a knee at x=0 gets its y values (#171)"""
+    x = list(range(-3, 7))
+    y = [0, 4, 7, 9, 10, 10.5, 10.8, 11, 11.1, 11.2]
+    kl = KneeLocator(x, y, online=online)
+    assert kl.knee == 0
+    assert kl.knee_y == 9
+    assert math.isclose(kl.norm_knee_y, 0.804, rel_tol=0.01)
+
+
+@pytest.mark.parametrize("dtype", [np.int8, np.int16, np.int32])
+def test_signed_int_x(dtype):
+    """Test that signed integer x doesn't overflow when normalized (#173)"""
+    x = (np.linspace(-1, 1, 11) * np.iinfo(dtype).max).astype(dtype)
+    y = [0, 4, 7, 9, 10, 10.5, 10.8, 11, 11.1, 11.2, 11.3]
+    kl = KneeLocator(x, y)
+    assert kl.knee == KneeLocator(x.astype(float), y).knee
+    assert kl.x_normalized.min() == 0 and kl.x_normalized.max() == 1
