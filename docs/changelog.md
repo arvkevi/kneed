@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.9.0 (2026-10-18)
 
 - Fixed knee detection on unevenly spaced x for concave decreasing and convex increasing curves (#98, #176). Thanks to @vhu43 for the approach in #142.
 - Dropped Python 3.8 and 3.9; added 3.13, 3.14 and 3.15 to CI (#175)
