@@ -571,6 +571,26 @@ def test_find_shape():
     assert curve == "convex"
 
 
+@pytest.mark.parametrize("x_type", [list, tuple])
+@pytest.mark.parametrize(
+    "dataset, expected",
+    [
+        ("concave_increasing", ("increasing", "concave")),
+        ("concave_decreasing", ("decreasing", "concave")),
+        ("convex_increasing", ("increasing", "convex")),
+        ("convex_decreasing", ("decreasing", "convex")),
+        ("bumpy", ("decreasing", "convex")),
+    ],
+)
+def test_find_shape_sequence_x(dataset, expected, x_type):
+    x, y = getattr(dg, dataset)()
+    x = x_type(x)
+    before = x_type(x)
+
+    assert find_shape(x, y) == expected
+    assert x == before
+
+
 @pytest.mark.parametrize(
     "curve, direction, flip_x, flip_y",
     [
