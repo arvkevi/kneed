@@ -21,6 +21,7 @@ def find_shape(x, y):
         ``"decreasing"`` and curve is ``"concave"`` or ``"convex"``.
     """
 
+    x = np.asarray(x)
     p = np.polyfit(x, y, deg=1)
     x1, x2 = int(len(x) * 0.2), int(len(x) * 0.8)
     q = np.mean(y[x1:x2]) - np.mean(x[x1:x2] * p[0] + p[1])
