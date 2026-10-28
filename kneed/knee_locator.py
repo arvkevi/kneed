@@ -285,77 +285,120 @@ class KneeLocator(object):
             ``(knee, norm_knee)`` where each is a float or None.
         """
         if not self.maxima_indices.size:
-            # No local maxima found in the difference curve
-            # The line is probably not polynomial, try plotting
-            # the difference curve with plt.plot(knee.x_difference, knee.y_difference)
-            # Also check that you aren't mistakenly setting the curve argument
             return None, None
-        # placeholder for which threshold region i is located in.
-        maxima_threshold_index = 0
-        minima_threshold_index = 0
-        traversed_maxima = False
-        # State flag to control knee detection after local minima
-        detection_active = True
-        # traverse the difference curve
-        for i, x in enumerate(self.x_difference):
-            # skip points on the curve before the the first local maxima
-            if i < self.maxima_indices[0]:
-                continue
 
-            j = i + 1
+        x = self.x
+        x_normalized = self.x_normalized
+        y_difference = self.y_difference
+        all_knees = self.all_knees
+        object_x = x.dtype.hasobject
+        unique_x = unique_normalized = None
 
-            # reached the end of the curve
-            if i == (len(self.x_difference) - 1):
-                break
-
-            # if we're at a local max, increment the maxima threshold index and continue
-            if (self.maxima_indices == i).any():
-                threshold = self.Tmx[maxima_threshold_index]
-                threshold_index = i
-                maxima_threshold_index += 1
-                # Reactivate detection when we reach a local maximum
+        def crossings():
+            maxima = self.maxima_indices
+            minima = self.minima_indices
+            stop = len(self.x_difference) - 1
+            if object_x or type(self.curve) is not str or type(self.direction) is not str:
+                # Keep repeated comparisons observable for object coordinates.
+                maxima_set = set(maxima)
+                minima_set = set(minima)
+                maxima_threshold_index = 0
                 detection_active = True
-            # values in difference curve are at or after a local minimum
-            if (self.minima_indices == i).any():
-                threshold = 0.0
-                minima_threshold_index += 1
-                # Deactivate detection after a local minimum until next local maximum
-                detection_active = False
+                for i in range(maxima[0], stop):
+                    if i in maxima_set:
+                        threshold = self.Tmx[maxima_threshold_index]
+                        threshold_index = i
+                        maxima_threshold_index += 1
+                        detection_active = True
+                    if i in minima_set:
+                        threshold = 0.0
+                        detection_active = False
+                    if detection_active and y_difference[i + 1] < threshold:
+                        yield threshold_index
+                return
 
-            if detection_active and self.y_difference[j] < threshold:
-                if self.curve == "convex":
-                    if self.direction == "decreasing":
-                        knee = self.x[threshold_index]
-                        norm_knee = self.x_normalized[threshold_index]
-                    else:
-                        knee = self.x[-(threshold_index + 1)]
-                        norm_knee = self.x_normalized[threshold_index]
+            if not np.isnan(y_difference).any():
+                # Between consecutive maxima the first minimum is the lowest
+                # value, so reducing the whole interval preserves crossings.
+                indices = maxima[maxima < stop]
+                if not indices.size:
+                    return
+                lows = np.fmin.reduceat(y_difference[1:], indices)
+                thresholds = self.Tmx[:indices.size]
+                crossed = lows < thresholds
+                # A flat extremum cannot cross a threshold at or below its
+                # height; higher thresholds still need minima precedence.
+                if (thresholds > y_difference[indices]).any():
+                    next_minimum = np.searchsorted(minima, indices)
+                    crossed &= indices != np.append(minima, stop)[next_minimum]
+                yield from indices[crossed]
+                return
 
-                elif self.curve == "concave":
-                    if self.direction == "decreasing":
-                        knee = self.x[-(threshold_index + 1)]
-                        norm_knee = self.x_normalized[threshold_index]
-                    else:
-                        knee = self.x[threshold_index]
-                        norm_knee = self.x_normalized[threshold_index]
+            # Each maximum stays active until the next maximum or minimum.
+            ends = np.minimum(np.append(maxima[1:], stop), stop)
+            next_minimum = np.searchsorted(minima, maxima)
+            ends = np.minimum(ends, np.append(minima, stop)[next_minimum])
+            active = maxima < ends
+            indices = maxima[active]
+            if not indices.size:
+                return
+            boundaries = np.empty(2 * indices.size, dtype=maxima.dtype)
+            boundaries[::2] = indices
+            boundaries[1::2] = ends[active]
+            if boundaries[-1] == stop:
+                boundaries = boundaries[:-1]
+            # Ignore NaNs just as individual less-than comparisons do.
+            lows = np.fmin.reduceat(y_difference[1:], boundaries)[::2]
+            yield from indices[lows < self.Tmx[active]]
 
-                # add the y value at the knee
-                y_at_knee = self.y[self.x == knee][0]
-                y_norm_at_knee = self.y_normalized[self.x_normalized == norm_knee][0]
-                if knee not in self.all_knees:
-                    self.all_knees.append(knee)
-                    self.all_norm_knees.append(norm_knee)
-                    self.all_knees_y.append(y_at_knee)
-                    self.all_norm_knees_y.append(y_norm_at_knee)
+        for threshold_index in crossings():
+            if self.curve == "convex":
+                if self.direction == "decreasing":
+                    knee_index = threshold_index
+                    knee = x[knee_index]
+                    norm_knee = x_normalized[threshold_index]
+                else:
+                    knee_index = -(threshold_index + 1)
+                    knee = x[knee_index]
+                    norm_knee = x_normalized[threshold_index]
+            elif self.curve == "concave":
+                if self.direction == "decreasing":
+                    knee_index = -(threshold_index + 1)
+                    knee = x[knee_index]
+                    norm_knee = x_normalized[threshold_index]
+                else:
+                    knee_index = threshold_index
+                    knee = x[knee_index]
+                    norm_knee = x_normalized[threshold_index]
 
-                # if detecting in offline mode, return the first knee found
-                if self.online is False:
-                    return knee, norm_knee
+            if object_x:
+                y_at_knee = self.y[x == knee][0]
+                y_norm_at_knee = self.y_normalized[x_normalized == norm_knee][0]
+            if knee not in all_knees:
+                if not object_x:
+                    if unique_x is None:
+                        unique_x = (x[1:] > x[:-1]).all()
+                        unique_normalized = (
+                            x_normalized[1:] > x_normalized[:-1]
+                        ).all()
+                    y_at_knee = (
+                        self.y[knee_index] if unique_x else self.y[x == knee][0]
+                    )
+                    y_norm_at_knee = (
+                        self.y_normalized[threshold_index]
+                        if unique_normalized
+                        else self.y_normalized[x_normalized == norm_knee][0]
+                    )
+                all_knees.append(knee)
+                self.all_norm_knees.append(norm_knee)
+                self.all_knees_y.append(y_at_knee)
+                self.all_norm_knees_y.append(y_norm_at_knee)
 
-        if not self.all_knees:
-            # No knee was found
+            if self.online is False:
+                return knee, norm_knee
+
+        if not all_knees:
             return None, None
-
         return knee, norm_knee
 
     def plot_knee_normalized(
